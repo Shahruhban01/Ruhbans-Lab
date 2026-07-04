@@ -167,12 +167,54 @@ final class Router
     private function executeAction($action, Request $request, array $params)
     {
         if (is_callable($action)) {
-            return $action($request, ...array_values($params));
+            return $action($request, ...$this->normalizeArguments($action, array_values($params)));
         }
 
         [$controllerClass, $method] = $action;
         $controller = new $controllerClass($this->app);
 
-        return $controller->{$method}($request, ...array_values($params));
+        return $controller->{$method}($request, ...$this->normalizeArguments(array($controller, $method), array_values($params)));
+    }
+
+    private function normalizeArguments($action, array $arguments): array
+    {
+        try {
+            $reflection = is_array($action) ? new \ReflectionMethod($action[0], $action[1]) : new \ReflectionFunction(\Closure::fromCallable($action));
+        } catch (\Throwable $exception) {
+            return $arguments;
+        }
+
+        $normalized = array();
+        $parameters = $reflection->getParameters();
+
+        foreach ($arguments as $index => $argument) {
+            $parameter = $parameters[$index + 1] ?? null;
+
+            $type = $parameter->getType();
+
+            if ($parameter === null || $type === null || !$type instanceof \ReflectionNamedType) {
+                $normalized[] = $argument;
+                continue;
+            }
+
+            if ($type->isBuiltin() && $type->getName() === 'int') {
+                $normalized[] = (int) $argument;
+                continue;
+            }
+
+            if ($type->isBuiltin() && $type->getName() === 'float') {
+                $normalized[] = (float) $argument;
+                continue;
+            }
+
+            if ($type->isBuiltin() && $type->getName() === 'bool') {
+                $normalized[] = filter_var($argument, FILTER_VALIDATE_BOOL, FILTER_NULL_ON_FAILURE);
+                continue;
+            }
+
+            $normalized[] = $argument;
+        }
+
+        return $normalized;
     }
 }

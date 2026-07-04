@@ -82,7 +82,16 @@ final class Application
 
     public function run(): string
     {
+        if ($this->isMaintenanceMode() && strpos($this->request->path(), '/admin') !== 0) {
+            throw new HttpException('Maintenance mode enabled.', 503);
+        }
+
         return $this->router->dispatch($this->request);
+    }
+
+    private function isMaintenanceMode(): bool
+    {
+        return is_file($this->basePath . '/storage/maintenance.flag');
     }
 
     public function basePath(): string

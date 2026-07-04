@@ -57,6 +57,8 @@ final class ErrorHandler
             $template = 'errors/403';
         } elseif ($statusCode === 419) {
             $template = 'errors/419';
+        } elseif ($statusCode === 503) {
+            $template = 'errors/503';
         }
 
         echo $this->view->render($template, [

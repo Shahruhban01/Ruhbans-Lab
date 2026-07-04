@@ -1,0 +1,629 @@
+{
+    "meta": {
+        "created_at": "2026-07-04 18:29:57",
+        "version": "phase9",
+        "app": "Ruhban's Lab"
+    },
+    "tables": {
+        "roles": [
+            {
+                "id": 1,
+                "name": "Admin",
+                "slug": "admin",
+                "created_at": "2026-07-04 20:18:27",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 2,
+                "name": "Editor",
+                "slug": "editor",
+                "created_at": "2026-07-04 20:18:27",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 3,
+                "name": "Author",
+                "slug": "author",
+                "created_at": "2026-07-04 20:18:27",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 4,
+                "name": "Visitor",
+                "slug": "visitor",
+                "created_at": "2026-07-04 20:18:27",
+                "updated_at": null,
+                "deleted_at": null
+            }
+        ],
+        "users": [
+            {
+                "id": 1,
+                "role_id": 1,
+                "username": "editorial-author",
+                "name": "Editorial Author",
+                "email": "admin@developerruhban.space",
+                "password": "$2y$10$QY2r.JDUV5RNhBMzMf9UsOT0/nXwSfueAYrEdUPhiHkmmToA05Z1y",
+                "avatar": null,
+                "bio": "Editorial contributor for the public knowledge base.",
+                "website": "https://developer-ruhban.example",
+                "github": null,
+                "linkedin": null,
+                "twitter": null,
+                "is_active": 1,
+                "email_verified_at": null,
+                "last_login": "2026-07-04 17:01:28",
+                "created_at": "2026-07-04 21:24:13",
+                "updated_at": "2026-07-04 17:01:28",
+                "deleted_at": null
+            }
+        ],
+        "content_types": [
+            {
+                "id": 1,
+                "name": "Article",
+                "slug": "article",
+                "description": "Long-form editorial content.",
+                "icon": "article",
+                "created_at": "2026-07-04 21:24:13",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 2,
+                "name": "News",
+                "slug": "news",
+                "description": "Time-sensitive updates and announcements.",
+                "icon": "newspaper",
+                "created_at": "2026-07-04 21:24:13",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 3,
+                "name": "Tutorial",
+                "slug": "tutorial",
+                "description": "Step-by-step educational content.",
+                "icon": "graduation-cap",
+                "created_at": "2026-07-04 21:24:13",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 4,
+                "name": "Guide",
+                "slug": "guide",
+                "description": "Evergreen reference and how-to content.",
+                "icon": "book",
+                "created_at": "2026-07-04 21:24:13",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 9,
+                "name": "Projects",
+                "slug": "projects",
+                "description": "Showcase software projects.",
+                "icon": "folder-open",
+                "created_at": "2026-07-04 21:31:34",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 10,
+                "name": "Blogs",
+                "slug": "blogs",
+                "description": "Long-form technical articles.",
+                "icon": "newspaper",
+                "created_at": "2026-07-04 21:31:34",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 11,
+                "name": "Problem Solution",
+                "slug": "problem-solution",
+                "description": "Document bugs and their solutions.",
+                "icon": "triangle-exclamation",
+                "created_at": "2026-07-04 21:31:34",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 12,
+                "name": "AI Prompts",
+                "slug": "ai-prompts",
+                "description": "Reusable prompts for AI workflows.",
+                "icon": "robot",
+                "created_at": "2026-07-04 21:31:34",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 13,
+                "name": "Code Snippets",
+                "slug": "code-snippets",
+                "description": "Reusable code snippets and examples.",
+                "icon": "code",
+                "created_at": "2026-07-04 21:31:34",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 14,
+                "name": "Tools",
+                "slug": "tools",
+                "description": "Recommend online tools.",
+                "icon": "screwdriver-wrench",
+                "created_at": "2026-07-04 21:31:34",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 15,
+                "name": "Websites",
+                "slug": "websites",
+                "description": "Useful websites and references.",
+                "icon": "globe",
+                "created_at": "2026-07-04 21:31:34",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 16,
+                "name": "Applications",
+                "slug": "applications",
+                "description": "Desktop or mobile applications.",
+                "icon": "mobile-screen-button",
+                "created_at": "2026-07-04 21:31:34",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 17,
+                "name": "Reviews",
+                "slug": "reviews",
+                "description": "Reviews of software, hardware, books, hosting, or courses.",
+                "icon": "star",
+                "created_at": "2026-07-04 21:31:34",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 18,
+                "name": "Resources",
+                "slug": "resources",
+                "description": "Useful learning resources.",
+                "icon": "book-open",
+                "created_at": "2026-07-04 21:31:34",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 19,
+                "name": "Videos",
+                "slug": "videos",
+                "description": "Educational videos and embeds.",
+                "icon": "video",
+                "created_at": "2026-07-04 21:31:34",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 20,
+                "name": "Downloads",
+                "slug": "downloads",
+                "description": "Downloadable files and assets.",
+                "icon": "download",
+                "created_at": "2026-07-04 21:31:34",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 21,
+                "name": "Developer Notes",
+                "slug": "developer-notes",
+                "description": "Personal technical notes.",
+                "icon": "note-sticky",
+                "created_at": "2026-07-04 21:31:34",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 22,
+                "name": "Thoughts",
+                "slug": "thoughts",
+                "description": "Engineering opinions and ideas.",
+                "icon": "comment-dots",
+                "created_at": "2026-07-04 21:31:34",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 23,
+                "name": "Experiments",
+                "slug": "experiments",
+                "description": "Document experiments and outcomes.",
+                "icon": "flask",
+                "created_at": "2026-07-04 21:31:34",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 24,
+                "name": "Roadmaps",
+                "slug": "roadmaps",
+                "description": "Learning paths and milestone plans.",
+                "icon": "route",
+                "created_at": "2026-07-04 21:31:34",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 25,
+                "name": "Cheat Sheets",
+                "slug": "cheat-sheets",
+                "description": "Quick reference pages.",
+                "icon": "list-check",
+                "created_at": "2026-07-04 21:31:34",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 26,
+                "name": "Recommendations",
+                "slug": "recommendations",
+                "description": "Recommend products, services, or software.",
+                "icon": "thumbs-up",
+                "created_at": "2026-07-04 21:31:34",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 27,
+                "name": "Collections",
+                "slug": "collections",
+                "description": "Group multiple posts together.",
+                "icon": "layer-group",
+                "created_at": "2026-07-04 21:31:34",
+                "updated_at": null,
+                "deleted_at": null
+            }
+        ],
+        "categories": [
+            {
+                "id": 1,
+                "parent_id": null,
+                "name": "Programming",
+                "slug": "programming",
+                "description": "Programming tutorials, snippets, and engineering notes.",
+                "icon": "code",
+                "featured_image": null,
+                "created_at": "2026-07-04 21:24:13",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 2,
+                "parent_id": null,
+                "name": "Design",
+                "slug": "design",
+                "description": "Visual design, UI, and product craft content.",
+                "icon": "palette",
+                "featured_image": null,
+                "created_at": "2026-07-04 21:24:13",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 3,
+                "parent_id": null,
+                "name": "Business",
+                "slug": "business",
+                "description": "Strategy, operations, and business insights.",
+                "icon": "briefcase",
+                "featured_image": null,
+                "created_at": "2026-07-04 21:24:13",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 4,
+                "parent_id": null,
+                "name": "Technology",
+                "slug": "technology",
+                "description": "Technology news, analysis, and reviews.",
+                "icon": "cpu",
+                "featured_image": null,
+                "created_at": "2026-07-04 21:24:13",
+                "updated_at": null,
+                "deleted_at": null
+            }
+        ],
+        "tags": [
+            {
+                "id": 1,
+                "name": "PHP",
+                "slug": "php",
+                "created_at": "2026-07-04 21:24:13",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 2,
+                "name": "MySQL",
+                "slug": "mysql",
+                "created_at": "2026-07-04 21:24:13",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 3,
+                "name": "Architecture",
+                "slug": "architecture",
+                "created_at": "2026-07-04 21:24:13",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 4,
+                "name": "SEO",
+                "slug": "seo",
+                "created_at": "2026-07-04 21:24:13",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 5,
+                "name": "Security",
+                "slug": "security",
+                "created_at": "2026-07-04 21:24:13",
+                "updated_at": null,
+                "deleted_at": null
+            }
+        ],
+        "posts": [
+            {
+                "id": 1,
+                "content_type_id": 4,
+                "author_id": 1,
+                "title": "Getting Started with Developer Ruhban",
+                "slug": "getting-started-with-developer-ruhban",
+                "excerpt": "A practical introduction to the platform structure, content flow, and SEO-first publishing model.",
+                "content": "<p>Developer Ruhban is built to keep content fast to publish and easy to maintain.</p><h2>What this platform is</h2><p>It combines a custom MVC backend, a reusable content model, and a clean public frontend.</p><h2>What you can publish</h2><p>Tutorials, guides, notes, and reference material can all live in the same system.</p>",
+                "featured_image": null,
+                "status": "published",
+                "visibility": "public",
+                "reading_time": 6,
+                "published_at": "2026-07-04 08:00:00",
+                "featured_flag": 1,
+                "created_at": "2026-07-04 08:00:00",
+                "updated_at": "2026-07-04 08:00:00",
+                "deleted_at": null
+            },
+            {
+                "id": 2,
+                "content_type_id": 3,
+                "author_id": 1,
+                "title": "Building SEO-Friendly Public Content Pages",
+                "slug": "building-seo-friendly-public-content-pages",
+                "excerpt": "A focused walkthrough of metadata, breadcrumbs, internal links, and structured public pages.",
+                "content": "<p>Search engines reward clarity, structure, and internal linking.</p><h2>Core rules</h2><ul><li>Use descriptive titles.</li><li>Keep URLs short and readable.</li><li>Add a single H1 and consistent headings.</li></ul><h2>Page structure</h2><p>Every page should have a clear purpose and support one main topic.</p>",
+                "featured_image": null,
+                "status": "published",
+                "visibility": "public",
+                "reading_time": 7,
+                "published_at": "2026-07-04 09:00:00",
+                "featured_flag": 1,
+                "created_at": "2026-07-04 09:00:00",
+                "updated_at": "2026-07-04 09:00:00",
+                "deleted_at": null
+            },
+            {
+                "id": 3,
+                "content_type_id": 1,
+                "author_id": 1,
+                "title": "Universal Content Workflow and Revisions",
+                "slug": "universal-content-workflow-and-revisions",
+                "excerpt": "A practical look at drafts, publishing, revision history, and metadata management.",
+                "content": "<p>The universal content workflow starts with a draft and ends with a traceable revision history.</p><h2>Workflow</h2><p>Edit, preview, publish, schedule, and restore revisions from one place.</p><h2>Why revisions matter</h2><p>Version history keeps publishing safe when content changes over time.</p>",
+                "featured_image": null,
+                "status": "published",
+                "visibility": "public",
+                "reading_time": 5,
+                "published_at": "2026-07-04 10:00:00",
+                "featured_flag": 0,
+                "created_at": "2026-07-04 10:00:00",
+                "updated_at": "2026-07-04 10:00:00",
+                "deleted_at": null
+            }
+        ],
+        "post_categories": [
+            {
+                "post_id": 1,
+                "category_id": 1,
+                "created_at": "2026-07-04 21:24:13"
+            },
+            {
+                "post_id": 2,
+                "category_id": 4,
+                "created_at": "2026-07-04 21:24:13"
+            },
+            {
+                "post_id": 3,
+                "category_id": 3,
+                "created_at": "2026-07-04 16:12:21"
+            }
+        ],
+        "post_tags": [
+            {
+                "post_id": 1,
+                "tag_id": 1,
+                "created_at": "2026-07-04 21:24:13"
+            },
+            {
+                "post_id": 1,
+                "tag_id": 3,
+                "created_at": "2026-07-04 21:24:13"
+            },
+            {
+                "post_id": 2,
+                "tag_id": 4,
+                "created_at": "2026-07-04 21:24:13"
+            },
+            {
+                "post_id": 3,
+                "tag_id": 5,
+                "created_at": "2026-07-04 16:12:21"
+            }
+        ],
+        "post_meta": [],
+        "post_seo": [],
+        "post_revisions": [
+            {
+                "id": 1,
+                "post_id": 3,
+                "user_id": 1,
+                "label": "Updated",
+                "snapshot_json": "{\"post\":{\"content_type_id\":1,\"author_id\":1,\"title\":\"Universal Content Workflow and Revisions\",\"slug\":\"universal-content-workflow-and-revisions\",\"excerpt\":\"A practical look at drafts, publishing, revision history, and metadata management.\",\"content\":\"<p>The universal content workflow starts with a draft and ends with a traceable revision history.<\\/p><h2>Workflow<\\/h2><p>Edit, preview, publish, schedule, and restore revisions from one place.<\\/p><h2>Why revisions matter<\\/h2><p>Version history keeps publishing safe when content changes over time.<\\/p>\",\"featured_image\":\"\",\"status\":\"published\",\"visibility\":\"public\",\"reading_time\":5,\"published_at\":\"2026-07-04 10:00:00\",\"featured_flag\":0,\"updated_at\":\"2026-07-04 16:12:21\",\"id\":\"3\"},\"categories\":[3],\"tags\":[5],\"meta\":{\"key\":\"\",\"value\":\"\"},\"seo\":{\"meta_title\":\"\",\"meta_description\":\"\",\"canonical_url\":\"\",\"robots\":\"index, follow\",\"schema_type\":\"Article\",\"og_title\":\"\",\"og_description\":\"\",\"og_image\":\"\",\"twitter_card\":\"summary_large_image\"}}",
+                "created_at": "2026-07-04 16:12:21"
+            }
+        ],
+        "media": [
+            {
+                "id": 1,
+                "uploader_id": 1,
+                "filename": "media_6a4930b954c528.22857240.png",
+                "original_name": "whatsapp.png",
+                "path": "uploads/media/media_6a4930b954c528.22857240.png",
+                "mime_type": "image/png",
+                "extension": "png",
+                "file_size": 113268,
+                "width": 360,
+                "height": 360,
+                "alt_text": "test image",
+                "created_at": "2026-07-04 16:11:37",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 2,
+                "uploader_id": 1,
+                "filename": "media_6a4930c7303693.76259180.png",
+                "original_name": "whatsapp.png",
+                "path": "uploads/media/media_6a4930c7303693.76259180.png",
+                "mime_type": "image/png",
+                "extension": "png",
+                "file_size": 113268,
+                "width": 360,
+                "height": 360,
+                "alt_text": "test image",
+                "created_at": "2026-07-04 16:11:51",
+                "updated_at": null,
+                "deleted_at": null
+            }
+        ],
+        "search_queries": [
+            {
+                "id": 1,
+                "search_term": "php routing",
+                "normalized_term": "php routing",
+                "filters_json": null,
+                "result_count": 2,
+                "ip_address": "127.0.0.1",
+                "user_agent": "Seed",
+                "referrer": null,
+                "created_at": "2026-07-04 12:00:00"
+            },
+            {
+                "id": 2,
+                "search_term": "seo content",
+                "normalized_term": "seo content",
+                "filters_json": null,
+                "result_count": 2,
+                "ip_address": "127.0.0.1",
+                "user_agent": "Seed",
+                "referrer": null,
+                "created_at": "2026-07-04 12:05:00"
+            },
+            {
+                "id": 3,
+                "search_term": "content workflow",
+                "normalized_term": "content workflow",
+                "filters_json": null,
+                "result_count": 1,
+                "ip_address": "127.0.0.1",
+                "user_agent": "Seed",
+                "referrer": null,
+                "created_at": "2026-07-04 12:10:00"
+            },
+            {
+                "id": 4,
+                "search_term": "developer notes",
+                "normalized_term": "developer notes",
+                "filters_json": null,
+                "result_count": 1,
+                "ip_address": "127.0.0.1",
+                "user_agent": "Seed",
+                "referrer": null,
+                "created_at": "2026-07-04 12:15:00"
+            }
+        ],
+        "content_metrics": [
+            {
+                "id": 1,
+                "post_id": 3,
+                "view_count": 2,
+                "search_count": 0,
+                "last_viewed_at": "2026-07-04 16:31:18",
+                "last_searched_at": null,
+                "created_at": "2026-07-04 16:31:13",
+                "updated_at": "2026-07-04 16:31:18"
+            },
+            {
+                "id": 3,
+                "post_id": 1,
+                "view_count": 32,
+                "search_count": 14,
+                "last_viewed_at": "2026-07-04 17:33:02",
+                "last_searched_at": "2026-07-04 12:15:00",
+                "created_at": "2026-07-04 12:00:00",
+                "updated_at": "2026-07-04 17:33:02"
+            },
+            {
+                "id": 4,
+                "post_id": 2,
+                "view_count": 31,
+                "search_count": 19,
+                "last_viewed_at": "2026-07-04 12:10:00",
+                "last_searched_at": "2026-07-04 12:20:00",
+                "created_at": "2026-07-04 12:10:00",
+                "updated_at": "2026-07-04 12:20:00"
+            }
+        ],
+        "comments": [],
+        "content_interactions": [],
+        "reading_history": [
+            {
+                "id": 1,
+                "post_id": 1,
+                "user_id": 1,
+                "guest_token": null,
+                "actor_key": "user:1",
+                "view_count": 8,
+                "last_viewed_at": "2026-07-04 17:33:02",
+                "created_at": "2026-07-04 16:59:44",
+                "updated_at": "2026-07-04 17:33:02"
+            }
+        ],
+        "notifications": [],
+        "activity_events": [],
+        "newsletter_subscribers": [],
+        "contact_messages": [],
+        "redirects": [],
+        "settings": []
+    }
+}
