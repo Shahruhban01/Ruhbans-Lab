@@ -1,0 +1,20 @@
+CREATE TABLE IF NOT EXISTS media (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    uploader_id BIGINT UNSIGNED NULL,
+    filename VARCHAR(255) NOT NULL,
+    original_name VARCHAR(255) NOT NULL,
+    path VARCHAR(255) NOT NULL,
+    mime_type VARCHAR(120) NOT NULL,
+    extension VARCHAR(30) NULL,
+    file_size BIGINT UNSIGNED NOT NULL DEFAULT 0,
+    width INT UNSIGNED NULL,
+    height INT UNSIGNED NULL,
+    alt_text VARCHAR(255) NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NULL DEFAULT NULL,
+    deleted_at DATETIME NULL DEFAULT NULL,
+    CONSTRAINT fk_media_uploader_id FOREIGN KEY (uploader_id) REFERENCES users (id) ON DELETE SET NULL,
+    INDEX idx_media_uploader_id (uploader_id),
+    INDEX idx_media_filename (filename),
+    INDEX idx_media_created_at (created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

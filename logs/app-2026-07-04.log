@@ -1,0 +1,14 @@
+[2026-07-04 16:00:59] [CRITICAL] SQLSTATE[HY093]: Invalid parameter number {"file":"C:\\xampp\\htdocs\\projectsPortfolio\\app\\Repositories\\PostRepository.php","line":335,"trace":null}
+[2026-07-04 16:04:41] [CRITICAL] Forbidden {"file":"C:\\xampp\\htdocs\\projectsPortfolio\\app\\Middleware\\AdminOnlyMiddleware.php","line":29,"trace":null}
+[2026-07-04 16:06:55] [CRITICAL] Forbidden {"file":"C:\\xampp\\htdocs\\projectsPortfolio\\app\\Middleware\\AdminOnlyMiddleware.php","line":29,"trace":null}
+[2026-07-04 16:12:04] [CRITICAL] SQLSTATE[HY093]: Invalid parameter number {"file":"C:\\xampp\\htdocs\\projectsPortfolio\\app\\Repositories\\MediaRepository.php","line":30,"trace":null}
+[2026-07-04 16:13:49] [CRITICAL] Forbidden {"file":"C:\\xampp\\htdocs\\projectsPortfolio\\app\\Middleware\\AdminOnlyMiddleware.php","line":29,"trace":null}
+[2026-07-04 16:15:40] [CRITICAL] Forbidden {"file":"C:\\xampp\\htdocs\\projectsPortfolio\\app\\Middleware\\AdminOnlyMiddleware.php","line":29,"trace":null}
+[2026-07-04 16:15:59] [CRITICAL] Forbidden {"file":"C:\\xampp\\htdocs\\projectsPortfolio\\app\\Middleware\\AdminOnlyMiddleware.php","line":29,"trace":null}
+[2026-07-04 16:21:59] [CRITICAL] SQLSTATE[42S02]: Base table or view not found: 1146 Table 'developer_ruhban.content_metrics' doesn't exist {"file":"C:\\xampp\\htdocs\\projectsPortfolio\\app\\Repositories\\PostRepository.php","line":337,"trace":null}
+[2026-07-04 16:21:59] [CRITICAL] Uncaught TypeError: http_response_code(): Argument #1 ($response_code) must be of type int, string given in C:\xampp\htdocs\projectsPortfolio\app\Core\ErrorHandler.php:51
+Stack trace:
+#0 C:\xampp\htdocs\projectsPortfolio\app\Core\ErrorHandler.php(51): http_response_code('42S02')
+#1 [internal function]: App\Core\ErrorHandler->handleException(Object(PDOException))
+#2 {main}
+  thrown {"type":1,"message":"Uncaught TypeError: http_response_code(): Argument #1 ($response_code) must be of type int, string given in C:\\xampp\\htdocs\\projectsPortfolio\\app\\Core\\ErrorHandler.php:51\nStack trace:\n#0 C:\\xampp\\htdocs\\projectsPortfolio\\app\\Core\\ErrorHandler.php(51): http_response_code('42S02')\n#1 [internal function]: App\\Core\\ErrorHandler->handleException(Object(PDOException))\n#2 {main}\n  thrown","file":"C:\\xampp\\htdocs\\projectsPortfolio\\app\\Core\\ErrorHandler.php","line":51}
