@@ -1,3 +1,4 @@
+<?php $faq = isset($faq) && is_array($faq) ? $faq : array(); ?>
 <section class="container page-stack">
     <section class="page-hero card-surface">
         <div>
@@ -25,4 +26,23 @@
             </ul>
         </aside>
     </section>
+
+    <?php if ($faq !== array()) : ?>
+        <section class="card-surface panel">
+            <div class="section-head section-head--compact">
+                <div>
+                    <p class="eyebrow">FAQ</p>
+                    <h2>Common questions</h2>
+                </div>
+            </div>
+            <div class="faq-list">
+                <?php foreach ($faq as $item) : ?>
+                    <details class="faq-item">
+                        <summary><?php echo e($item['question']); ?></summary>
+                        <p><?php echo e($item['answer']); ?></p>
+                    </details>
+                <?php endforeach; ?>
+            </div>
+        </section>
+    <?php endif; ?>
 </section>

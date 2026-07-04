@@ -5,8 +5,16 @@ $description = $meta['description'] ?? 'Developer Ruhban is a scalable public de
 $canonical = $meta['canonical'] ?? url(request()->path());
 $schemaType = $meta['schemaType'] ?? 'WebSite';
 $robots = $meta['robots'] ?? 'index, follow';
+$ogTitle = $meta['ogTitle'] ?? $title;
+$ogDescription = $meta['ogDescription'] ?? $description;
+$ogImage = $meta['ogImage'] ?? asset('assets/images/seo-card.svg');
+$ogType = $meta['ogType'] ?? ($schemaType === 'Article' || $schemaType === 'BlogPosting' ? 'article' : 'website');
+$twitterCard = $meta['twitterCard'] ?? 'summary_large_image';
+$twitterCreator = $meta['twitterCreator'] ?? '@developerruhban';
+$generator = $meta['generator'] ?? 'Developer Ruhban CMS';
 $theme = $_COOKIE['theme'] ?? 'system';
 $breadcrumbs = isset($breadcrumbs) && is_array($breadcrumbs) ? $breadcrumbs : array();
+$schemaData = isset($meta['schema']) && is_array($meta['schema']) ? $meta['schema'] : array();
 $currentPath = trim(request()->path(), '/');
 $flashSuccess = app()->session()->pullFlash('success');
 $flashError = app()->session()->pullFlash('error');
@@ -27,27 +35,73 @@ $navigation = array(
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?php echo e($title); ?></title>
+    <meta name="generator" content="<?php echo e($generator); ?>">
     <meta name="description" content="<?php echo e($description); ?>">
     <meta name="robots" content="<?php echo e($robots); ?>">
     <link rel="canonical" href="<?php echo e($canonical); ?>">
     <meta property="og:site_name" content="<?php echo e(config('app.name', 'Developer Ruhban')); ?>">
-    <meta property="og:title" content="<?php echo e($title); ?>">
-    <meta property="og:description" content="<?php echo e($description); ?>">
-    <meta property="og:type" content="website">
+    <meta property="og:title" content="<?php echo e($ogTitle); ?>">
+    <meta property="og:description" content="<?php echo e($ogDescription); ?>">
+    <meta property="og:type" content="<?php echo e($ogType); ?>">
     <meta property="og:url" content="<?php echo e($canonical); ?>">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="<?php echo e($title); ?>">
-    <meta name="twitter:description" content="<?php echo e($description); ?>">
+    <meta property="og:image" content="<?php echo e($ogImage); ?>">
+    <meta name="twitter:card" content="<?php echo e($twitterCard); ?>">
+    <meta name="twitter:title" content="<?php echo e($ogTitle); ?>">
+    <meta name="twitter:description" content="<?php echo e($ogDescription); ?>">
+    <meta name="twitter:image" content="<?php echo e($ogImage); ?>">
+    <meta name="twitter:creator" content="<?php echo e($twitterCreator); ?>">
     <link rel="stylesheet" href="<?php echo e(asset('assets/css/app.css')); ?>">
-    <script type="application/ld+json">
-    <?php echo json_encode([
-        '@context' => 'https://schema.org',
-        '@type' => $schemaType,
-        'name' => config('app.name', 'Developer Ruhban'),
-        'url' => $canonical,
-        'description' => $description,
-    ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE); ?>
-    </script>
+    <link rel="alternate" type="application/rss+xml" title="RSS Feed" href="<?php echo e(url('/feed.xml')); ?>">
+    <?php
+    $defaultSchemas = array();
+
+    if ($schemaData === array()) {
+        $defaultSchemas[] = array(
+            '@context' => 'https://schema.org',
+            '@type' => $schemaType,
+            'name' => $title,
+            'url' => $canonical,
+            'description' => $description,
+        );
+
+        if ($schemaType === 'WebSite' || $schemaType === 'WebPage') {
+            $defaultSchemas[] = array(
+                '@context' => 'https://schema.org',
+                '@type' => 'SearchAction',
+                'target' => url('/search?q={search_term_string}'),
+                'query-input' => 'required name=search_term_string',
+            );
+        }
+    }
+
+    if ($breadcrumbs !== array()) {
+        $breadcrumbSchema = array(
+            '@context' => 'https://schema.org',
+            '@type' => 'BreadcrumbList',
+            'itemListElement' => array(),
+        );
+
+        foreach ($breadcrumbs as $index => $crumb) {
+            $breadcrumbSchema['itemListElement'][] = array(
+                '@type' => 'ListItem',
+                'position' => $index + 1,
+                'name' => $crumb['label'],
+                'item' => !empty($crumb['url']) ? $crumb['url'] : $canonical,
+            );
+        }
+
+        $defaultSchemas[] = $breadcrumbSchema;
+    }
+
+    $schemas = array_merge($defaultSchemas, $schemaData);
+
+    foreach ($schemas as $schemaItem) :
+        if (!is_array($schemaItem)) {
+            continue;
+        }
+    ?>
+    <script type="application/ld+json"><?php echo json_encode($schemaItem, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE); ?></script>
+    <?php endforeach; ?>
 </head>
 <body>
 <a class="skip-link" href="#content">Skip to content</a>

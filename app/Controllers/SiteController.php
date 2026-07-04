@@ -44,6 +44,8 @@ final class SiteController extends BaseController
 
     public function home(Request $request)
     {
+        $defaultImage = asset('assets/images/seo-card.svg');
+
         return $this->view('site/home', array(
             'siteName' => (string) $this->app->config()->get('app.name', 'Developer Ruhban'),
             'featuredPosts' => $this->postRepository->featuredPublished(3),
@@ -62,6 +64,28 @@ final class SiteController extends BaseController
                 'canonical' => url('/'),
                 'schemaType' => 'WebSite',
                 'robots' => 'index, follow',
+                'ogImage' => $defaultImage,
+                'schema' => array(
+                    array(
+                        '@context' => 'https://schema.org',
+                        '@type' => 'WebSite',
+                        'name' => (string) $this->app->config()->get('app.name', 'Developer Ruhban'),
+                        'url' => url('/'),
+                        'description' => 'A content-first developer knowledge platform with tutorials, guides, reviews, and practical technical notes.',
+                        'potentialAction' => array(
+                            '@type' => 'SearchAction',
+                            'target' => url('/search?q={search_term_string}'),
+                            'query-input' => 'required name=search_term_string',
+                        ),
+                    ),
+                    array(
+                        '@context' => 'https://schema.org',
+                        '@type' => 'Organization',
+                        'name' => (string) $this->app->config()->get('app.name', 'Developer Ruhban'),
+                        'url' => url('/'),
+                        'logo' => $defaultImage,
+                    ),
+                ),
             ),
         ));
     }
@@ -168,10 +192,40 @@ final class SiteController extends BaseController
         $this->postRepository->recordView((int) $post['id']);
         $identity = $this->interactionIdentity();
         $this->engagementRepository->recordHistory((int) $post['id'], $identity);
+        $featuredImage = !empty($post['featured_image']) ? asset($post['featured_image']) : asset('assets/images/seo-card.svg');
+        $contentHtml = $this->optimizeContentImages((string) $post['content']);
+        $schema = array(
+            array(
+                '@context' => 'https://schema.org',
+                '@type' => 'Article',
+                'headline' => (string) $post['title'],
+                'description' => $this->contentDescription($post, $seo),
+                'image' => $featuredImage,
+                'author' => array(
+                    '@type' => 'Person',
+                    'name' => (string) $post['author_name'],
+                ),
+                'publisher' => array(
+                    '@type' => 'Organization',
+                    'name' => (string) $this->app->config()->get('app.name', 'Developer Ruhban'),
+                    'logo' => array(
+                        '@type' => 'ImageObject',
+                        'url' => asset('assets/images/seo-card.svg'),
+                    ),
+                ),
+                'datePublished' => !empty($post['published_at']) ? $post['published_at'] : $post['created_at'],
+                'dateModified' => !empty($post['updated_at']) ? $post['updated_at'] : $post['created_at'],
+                'mainEntityOfPage' => url('/content/' . $slug),
+                'keywords' => trim(implode(', ', array_filter(array_map(static function (array $tag): string {
+                    return isset($tag['name']) ? (string) $tag['name'] : '';
+                }, $tags)))),
+            ),
+        );
 
         return $this->view('site/content', array(
             'siteName' => (string) $this->app->config()->get('app.name', 'Developer Ruhban'),
             'post' => $post,
+            'contentHtml' => $contentHtml,
             'categories' => $categories,
             'tags' => $tags,
             'seo' => $seo ?: array(),
@@ -194,6 +248,9 @@ final class SiteController extends BaseController
                 'canonical' => url('/content/' . $slug),
                 'schemaType' => 'Article',
                 'robots' => 'index, follow',
+                'ogImage' => $featuredImage,
+                'twitterCard' => 'summary_large_image',
+                'schema' => $schema,
             ),
             'breadcrumbs' => $this->breadcrumbs(array(
                 array('label' => 'Home', 'url' => url('/')),
@@ -205,6 +262,12 @@ final class SiteController extends BaseController
 
     public function about(Request $request)
     {
+        $faq = array(
+            array('question' => 'What is Developer Ruhban?', 'answer' => 'A content-first knowledge platform for tutorials, guides, reviews, and practical technical notes.'),
+            array('question' => 'What content types does it support?', 'answer' => 'It supports a universal content model for articles, tutorials, projects, tools, resources, and more.'),
+            array('question' => 'Why is SEO built in?', 'answer' => 'Because crawlability, structured data, and fast loading are core product requirements, not later additions.'),
+        );
+
         return $this->view('site/about', array('siteName' => (string) $this->app->config()->get('app.name', 'Developer Ruhban')), array(
             'meta' => array(
                 'title' => 'About - Developer Ruhban',
@@ -212,11 +275,30 @@ final class SiteController extends BaseController
                 'canonical' => url('/about'),
                 'schemaType' => 'AboutPage',
                 'robots' => 'index, follow',
+                'ogImage' => asset('assets/images/seo-card.svg'),
+                'faq' => $faq,
+                'schema' => array(
+                    array(
+                        '@context' => 'https://schema.org',
+                        '@type' => 'FAQPage',
+                        'mainEntity' => array_map(static function (array $item): array {
+                            return array(
+                                '@type' => 'Question',
+                                'name' => $item['question'],
+                                'acceptedAnswer' => array(
+                                    '@type' => 'Answer',
+                                    'text' => $item['answer'],
+                                ),
+                            );
+                        }, $faq),
+                    ),
+                ),
             ),
             'breadcrumbs' => $this->breadcrumbs(array(
                 array('label' => 'Home', 'url' => url('/')),
                 array('label' => 'About', 'url' => url('/about')),
             )),
+            'faq' => $faq,
         ));
     }
 
@@ -233,6 +315,7 @@ final class SiteController extends BaseController
                 'canonical' => url('/contact'),
                 'schemaType' => 'ContactPage',
                 'robots' => 'index, follow',
+                'ogImage' => asset('assets/images/seo-card.svg'),
             ),
             'breadcrumbs' => $this->breadcrumbs(array(
                 array('label' => 'Home', 'url' => url('/')),
@@ -250,6 +333,7 @@ final class SiteController extends BaseController
                 'canonical' => url('/privacy-policy'),
                 'schemaType' => 'WebPage',
                 'robots' => 'index, follow',
+                'ogImage' => asset('assets/images/seo-card.svg'),
             ),
             'breadcrumbs' => $this->breadcrumbs(array(
                 array('label' => 'Home', 'url' => url('/')),
@@ -267,6 +351,7 @@ final class SiteController extends BaseController
                 'canonical' => url('/terms-and-conditions'),
                 'schemaType' => 'WebPage',
                 'robots' => 'index, follow',
+                'ogImage' => asset('assets/images/seo-card.svg'),
             ),
             'breadcrumbs' => $this->breadcrumbs(array(
                 array('label' => 'Home', 'url' => url('/')),
@@ -354,6 +439,15 @@ final class SiteController extends BaseController
         }
 
         return 'Read ' . (string) $post['title'] . ' on Developer Ruhban.';
+    }
+
+    private function optimizeContentImages(string $html): string
+    {
+        if ($html === '' || stripos($html, '<img') === false) {
+            return $html;
+        }
+
+        return preg_replace('/<img\b(?![^>]*\bloading=)([^>]*?)>/i', '<img loading="lazy" decoding="async"$1>', $html) ?: $html;
     }
 
     private function breadcrumbs(array $items): array

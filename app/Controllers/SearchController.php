@@ -105,6 +105,14 @@ final class SearchController extends BaseController
         $robots = $query !== '' || $this->hasAdvancedFilters($filters) ? 'noindex, follow' : 'index, follow';
         $title = $query !== '' ? 'Search results for ' . $query . ' - Developer Ruhban' : 'Search & Discovery - Developer Ruhban';
         $description = $query !== '' ? 'Explore matching content, related searches, and discovery recommendations for ' . $query . '.' : 'Search the public knowledge base and explore trending, popular, and recently updated content.';
+        $schema = array(
+            array(
+                '@context' => 'https://schema.org',
+                '@type' => 'SearchAction',
+                'target' => url('/search?q={search_term_string}'),
+                'query-input' => 'required name=search_term_string',
+            ),
+        );
 
         return array(
             'data' => array(
@@ -137,6 +145,9 @@ final class SearchController extends BaseController
                     'canonical' => $canonical,
                     'schemaType' => 'WebPage',
                     'robots' => $robots,
+                    'ogImage' => asset('assets/images/seo-card.svg'),
+                    'twitterCard' => 'summary_large_image',
+                    'schema' => $schema,
                 ),
                 'breadcrumbs' => $this->breadcrumbs(array(
                     array('label' => 'Home', 'url' => url('/')),

@@ -12,6 +12,7 @@ $activityFeed = isset($activityFeed) && is_array($activityFeed) ? $activityFeed 
 $notifications = isset($notifications) && is_array($notifications) ? $notifications : array();
 $notificationCount = isset($notificationCount) ? (int) $notificationCount : 0;
 $currentUser = isset($currentUser) && is_array($currentUser) ? $currentUser : app()->session()->get(config('auth.session_key', 'auth_user'));
+$contentHtml = isset($contentHtml) ? (string) $contentHtml : (string) $post['content'];
 $publishedAt = !empty($post['published_at']) ? $post['published_at'] : $post['created_at'];
 ?>
 <article class="container content-detail" data-reading-progress-container>
@@ -30,14 +31,14 @@ $publishedAt = !empty($post['published_at']) ? $post['published_at'] : $post['cr
             </div>
         </div>
         <?php if (!empty($post['featured_image'])) : ?>
-            <img class="article-hero-image" src="<?php echo e(asset($post['featured_image'])); ?>" alt="<?php echo e($post['title']); ?>">
+            <img class="article-hero-image" src="<?php echo e(asset($post['featured_image'])); ?>" alt="<?php echo e($post['title']); ?>" loading="eager" decoding="async">
         <?php endif; ?>
     </section>
 
     <section class="article-layout">
         <div class="article-body card-surface prose-content">
             <div class="article-content">
-                <?php echo $post['content']; ?>
+                <?php echo $contentHtml; ?>
             </div>
             <?php if ($metaFields !== array()) : ?>
                 <section class="article-meta-fields">

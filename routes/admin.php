@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Controllers\Admin\DashboardController;
 use App\Controllers\Admin\ContentController;
+use App\Controllers\Admin\RedirectController;
 use App\Controllers\Admin\UserController;
 use App\Core\Router;
 
@@ -14,6 +15,9 @@ return static function (Router $router): void {
     ], static function (Router $router): void {
         $router->get('/', [DashboardController::class, 'index']);
         $router->get('/activity-logs', [DashboardController::class, 'activityLogs']);
+        $router->get('/redirects', [RedirectController::class, 'index']);
+        $router->post('/redirects', [RedirectController::class, 'store']);
+        $router->post('/redirects/{id}/delete', [RedirectController::class, 'delete']);
 
         $router->group([
             'prefix' => '/content',

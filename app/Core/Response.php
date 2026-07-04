@@ -55,6 +55,20 @@ final class Response
         if (!headers_sent()) {
             http_response_code($this->statusCode);
 
+            $securityHeaders = array(
+                'X-Content-Type-Options' => 'nosniff',
+                'X-Frame-Options' => 'SAMEORIGIN',
+                'Referrer-Policy' => 'strict-origin-when-cross-origin',
+                'Permissions-Policy' => 'camera=(), microphone=(), geolocation=()',
+                'X-XSS-Protection' => '1; mode=block',
+            );
+
+            foreach ($securityHeaders as $name => $value) {
+                if (!isset($this->headers[$name])) {
+                    header($name . ': ' . $value, true);
+                }
+            }
+
             foreach ($this->headers as $name => $value) {
                 header($name . ': ' . $value, true);
             }

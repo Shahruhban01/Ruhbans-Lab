@@ -14,6 +14,7 @@ $role = is_array($currentUser) && isset($currentUser['role_name']) ? $currentUse
         <a class="admin-nav__link" href="<?php echo e(url('/admin/content/tags')); ?>">Tags</a>
         <a class="admin-nav__link" href="<?php echo e(url('/admin/content/types')); ?>">Content Types</a>
         <a class="admin-nav__link" href="<?php echo e(url('/admin/content/media')); ?>">Media</a>
+        <a class="admin-nav__link" href="<?php echo e(url('/admin/redirects')); ?>">Redirects</a>
         <a class="admin-nav__link" href="<?php echo e(url('/admin/users')); ?>">Users</a>
         <a class="admin-nav__link" href="<?php echo e(url('/admin/activity-logs')); ?>">Activity Logs</a>
         <form method="post" action="<?php echo e(url('/admin/logout')); ?>" class="admin-nav__logout">

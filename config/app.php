@@ -24,5 +24,7 @@ return [
         __DIR__ . '/../routes/admin.php',
         __DIR__ . '/../routes/content.php',
         __DIR__ . '/../routes/api.php',
+        __DIR__ . '/../routes/seo.php',
+        __DIR__ . '/../routes/redirects.php',
     ],
 ];
