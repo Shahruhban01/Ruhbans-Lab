@@ -38,33 +38,40 @@ $renderCategoryTree = function (array $items, array $selected, int $depth = 0) u
     }
 };
 
+$contentId = $postValue('id');
+$isEditing = $mode === 'edit' && $contentId;
+$previewUrl = $isEditing ? url('/content/' . $postValue('slug')) : '';
+
 ?>
 <section class="page-stack">
-    <div class="page-header page-header--split">
-        <div>
+    <section class="editor-toolbar card-surface panel sticky-toolbar">
+        <div class="editor-toolbar__copy">
             <p class="eyebrow">Content editor</p>
             <h2><?php echo e($mode === 'edit' ? 'Edit post' : 'Create post'); ?></h2>
+            <p class="editor-toolbar__status" data-dirty-state>Ready to publish</p>
         </div>
         <div class="content-actions">
-            <?php if ($mode === 'edit') : ?>
-                <form method="post" action="<?php echo e(url('/admin/content/' . $postValue('id') . '/publish')); ?>" class="inline-form">
+            <?php if ($isEditing) : ?>
+                <a class="btn btn-secondary" href="<?php echo e($previewUrl); ?>" target="_blank" rel="noopener">Preview</a>
+                <form method="post" action="<?php echo e(url('/admin/content/' . $contentId . '/publish')); ?>" class="inline-form">
                     <?php echo csrf_field(); ?>
                     <button type="submit" class="btn btn-secondary">Publish</button>
                 </form>
-                <form method="post" action="<?php echo e(url('/admin/content/' . $postValue('id') . '/schedule')); ?>" class="inline-form">
+                <form method="post" action="<?php echo e(url('/admin/content/' . $contentId . '/schedule')); ?>" class="inline-form">
                     <?php echo csrf_field(); ?>
                     <input type="datetime-local" name="published_at" value="<?php echo e($postValue('published_at', '')); ?>">
                     <button type="submit" class="btn btn-secondary">Schedule</button>
                 </form>
             <?php endif; ?>
+            <button type="submit" form="content-editor-form" class="btn btn-primary"><?php echo e($mode === 'edit' ? 'Update post' : 'Save draft'); ?></button>
         </div>
-    </div>
+    </section>
 
     <?php if (!empty($errors['general'])) : ?>
         <div class="form-alert form-alert--error"><?php echo e($errors['general']); ?></div>
     <?php endif; ?>
 
-    <form method="post" action="<?php echo e($formAction); ?>" class="content-editor-grid" enctype="multipart/form-data">
+    <form method="post" action="<?php echo e($formAction); ?>" class="content-editor-grid" enctype="multipart/form-data" id="content-editor-form" data-dirty-form>
         <?php echo csrf_field(); ?>
         <?php if ($mode === 'edit') : ?>
             <input type="hidden" name="_method" value="PATCH">
@@ -123,7 +130,7 @@ $renderCategoryTree = function (array $items, array $selected, int $depth = 0) u
             </div>
         </section>
 
-        <aside class="content-editor-aside">
+        <aside class="content-editor-aside sticky-stack">
             <section class="panel card-surface">
                 <h3>Post settings</h3>
                 <label>
@@ -145,6 +152,24 @@ $renderCategoryTree = function (array $items, array $selected, int $depth = 0) u
                     <span>Featured image</span>
                     <input type="text" name="featured_image" value="<?php echo e($postValue('featured_image')); ?>" placeholder="Media path or URL">
                 </label>
+            </section>
+
+            <section class="panel card-surface">
+                <h3>Publish status</h3>
+                <div class="status-summary">
+                    <span class="status-pill status-pill--active"><?php echo e(ucfirst($postValue('status', 'draft'))); ?></span>
+                    <span class="editor-toolbar__status">Visibility: <?php echo e(ucfirst($postValue('visibility', 'public'))); ?></span>
+                </div>
+                <div class="meta-list">
+                    <div>
+                        <dt>Reading time</dt>
+                        <dd><?php echo e($postValue('reading_time', 0)); ?> min</dd>
+                    </div>
+                    <div>
+                        <dt>Published date</dt>
+                        <dd><?php echo e($postValue('published_at') ?: 'Not scheduled'); ?></dd>
+                    </div>
+                </div>
             </section>
 
             <section class="panel card-surface">
@@ -206,9 +231,6 @@ $renderCategoryTree = function (array $items, array $selected, int $depth = 0) u
                 <label><span>Twitter card</span><input type="text" name="seo_twitter_card" value="<?php echo e($seoValue('twitter_card', 'summary_large_image')); ?>"></label>
             </section>
 
-            <section class="panel card-surface">
-                <button type="submit" class="btn btn-primary"><?php echo e($mode === 'edit' ? 'Update post' : 'Save draft'); ?></button>
-            </section>
         </aside>
     </form>
 

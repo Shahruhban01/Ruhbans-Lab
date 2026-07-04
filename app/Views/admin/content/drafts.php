@@ -3,6 +3,20 @@ $drafts = isset($posts['data']) ? $posts['data'] : array();
 $pagination = isset($posts['pagination']) ? $posts['pagination'] : array('page' => 1, 'pages' => 1, 'total' => 0);
 ?>
 <section class="page-stack">
+    <section class="admin-dashboard-hero card-surface">
+        <div class="admin-dashboard-hero__copy">
+            <p class="eyebrow">Publishing workflow</p>
+            <h2>Drafts</h2>
+            <p class="lead">Pick up incomplete posts, review their status, and publish from the same workspace.</p>
+        </div>
+        <div class="admin-dashboard-hero__rail">
+            <div class="workflow-card workflow-card--compact">
+                <p class="eyebrow">Actions</p>
+                <a class="quick-link" href="<?php echo e(url('/admin/content/create')); ?>"><strong>New draft</strong><span>Start writing now.</span></a>
+            </div>
+        </div>
+    </section>
+
     <div class="page-header page-header--split">
         <div>
             <p class="eyebrow">Publishing workflow</p>

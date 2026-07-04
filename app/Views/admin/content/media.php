@@ -3,6 +3,20 @@ $mediaData = isset($media['data']) ? $media['data'] : array();
 $pagination = isset($media['pagination']) ? $media['pagination'] : array('page' => 1, 'pages' => 1, 'total' => 0);
 ?>
 <section class="page-stack">
+    <section class="admin-dashboard-hero card-surface">
+        <div class="admin-dashboard-hero__copy">
+            <p class="eyebrow">Asset library</p>
+            <h2>Media Manager</h2>
+            <p class="lead">Upload, review, and reuse assets from a workspace that keeps library management close to publishing.</p>
+        </div>
+        <div class="admin-dashboard-hero__rail">
+            <div class="workflow-card workflow-card--compact">
+                <p class="eyebrow">Shortcuts</p>
+                <a class="quick-link" href="<?php echo e(url('/admin/content/create')); ?>"><strong>Attach to content</strong><span>Pick featured media later.</span></a>
+            </div>
+        </div>
+    </section>
+
     <div class="page-header page-header--split">
         <div>
             <p class="eyebrow">Asset library</p>

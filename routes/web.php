@@ -24,6 +24,13 @@ return static function (Router $router): void {
     $router->post('/newsletter/subscribe', [EngagementController::class, 'newsletter'], array('csrf'));
     $router->post('/content/{postId}/comments', [EngagementController::class, 'comment'], array('csrf'));
     $router->post('/content/{postId}/react/{type}', [EngagementController::class, 'react'], array('csrf'));
+    $router->get('/lab', [SiteController::class, 'lab']);
+    $router->get('/lab/{slug}', [SiteController::class, 'labProduct']);
+    $router->get('/login', [SiteController::class, 'showLogin']);
+    $router->post('/login', [SiteController::class, 'login']);
+    $router->get('/signup', [SiteController::class, 'showSignup']);
+    $router->post('/signup', [SiteController::class, 'signup']);
+    $router->get('/logout', [SiteController::class, 'logout']);
     $router->get('/privacy-policy', [SiteController::class, 'privacy']);
     $router->get('/terms-and-conditions', [SiteController::class, 'terms']);
 };

@@ -8,35 +8,39 @@ $archiveMonths = isset($archiveMonths) && is_array($archiveMonths) ? $archiveMon
 $activityFeed = isset($activityFeed) && is_array($activityFeed) ? $activityFeed : array();
 $readingHistory = isset($readingHistory) && is_array($readingHistory) ? $readingHistory : array();
 ?>
-<section class="hero hero--home container">
-    <div class="hero__copy">
-        <p class="eyebrow">Public developer knowledge platform</p>
-        <h1><?php echo e($siteName); ?></h1>
-        <p class="lead">A premium, content-first platform for tutorials, guides, notes, projects, and reviews with strong SEO defaults, thoughtful navigation, and a shared-hosting friendly architecture.</p>
-        <form class="site-search site-search--wide" action="<?php echo e(url('/search')); ?>" method="get" data-search-form data-search-suggest-endpoint="<?php echo e(url('/search/suggest')); ?>">
-            <input type="search" name="q" placeholder="Search tutorials, projects, tools, and more" data-search-input autocomplete="off">
-            <button class="btn btn-primary" type="submit">Search</button>
-        </form>
-        <div class="hero__actions">
-            <a class="btn btn-primary" href="<?php echo e(url('/archive')); ?>">Browse archive</a>
-            <a class="btn btn-secondary" href="<?php echo e(url('/search')); ?>">Discover content</a>
+<div class="container my-5">
+    <div class="row align-items-center g-5">
+        <div class="col-lg-7 hero__copy">
+            <p class="eyebrow text-primary">Public developer knowledge platform</p>
+            <h1 class="display-4 fw-bold mb-3"><?php echo e($siteName); ?></h1>
+            <p class="lead mb-4">A premium, content-first platform for tutorials, guides, notes, projects, and reviews with strong SEO defaults, thoughtful navigation, and a shared-hosting friendly architecture.</p>
+            <form class="site-search site-search--wide d-flex gap-2 mb-4" action="<?php echo e(url('/search')); ?>" method="get" data-search-form data-search-suggest-endpoint="<?php echo e(url('/search/suggest')); ?>">
+                <input type="search" name="q" class="form-control" placeholder="Search tutorials, projects, tools, and more" data-search-input autocomplete="off">
+                <button class="btn btn-primary" type="submit">Search</button>
+            </form>
+            <div class="hero__actions">
+                <a class="btn btn-primary" href="<?php echo e(url('/archive')); ?>">Browse archive</a>
+                <a class="btn btn-secondary" href="<?php echo e(url('/search')); ?>">Discover content</a>
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <aside class="hero__panel card-surface p-4">
+                <p class="eyebrow mb-3">Publishing stack</p>
+                <div class="chip-grid mb-4">
+                    <?php foreach ($contentTypes as $type) : ?>
+                        <a class="chip chip--subtle" href="<?php echo e(url('/type/' . $type['slug'])); ?>"><?php echo e($type['name']); ?></a>
+                    <?php endforeach; ?>
+                </div>
+                <div class="search-stats">
+                    <div class="stat-card"><span>Featured</span><strong><?php echo e(count($featured)); ?></strong></div>
+                    <div class="stat-card"><span>Recent</span><strong><?php echo e(count($recent)); ?></strong></div>
+                    <div class="stat-card"><span>Categories</span><strong><?php echo e(count($categories)); ?></strong></div>
+                    <div class="stat-card"><span>Collections</span><strong><?php echo e(count($archiveMonths)); ?></strong></div>
+                </div>
+            </aside>
         </div>
     </div>
-    <aside class="hero__panel card-surface panel">
-        <p class="eyebrow">Publishing stack</p>
-        <div class="chip-grid">
-            <?php foreach ($contentTypes as $type) : ?>
-                <a class="chip" href="<?php echo e(url('/type/' . $type['slug'])); ?>"><?php echo e($type['name']); ?></a>
-            <?php endforeach; ?>
-        </div>
-        <div class="search-stats">
-            <div class="stat-card card-surface"><span>Featured</span><strong><?php echo e(count($featured)); ?></strong></div>
-            <div class="stat-card card-surface"><span>Recent</span><strong><?php echo e(count($recent)); ?></strong></div>
-            <div class="stat-card card-surface"><span>Categories</span><strong><?php echo e(count($categories)); ?></strong></div>
-            <div class="stat-card card-surface"><span>Collections</span><strong><?php echo e(count($archiveMonths)); ?></strong></div>
-        </div>
-    </aside>
-</section>
+</div>
 
 <section class="container section-stack">
     <div class="section-head">

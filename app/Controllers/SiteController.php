@@ -454,4 +454,298 @@ final class SiteController extends BaseController
     {
         return $items;
     }
+
+    public function lab(Request $request)
+    {
+        $search = trim((string) $request->input('q', ''));
+        $categorySlug = trim((string) $request->input('category', ''));
+        $tagSlug = trim((string) $request->input('tag', ''));
+        $status = trim((string) $request->input('status', ''));
+        $productType = trim((string) $request->input('product_type', ''));
+
+        $filters = array(
+            'type_slug' => 'product',
+            'search' => $search,
+            'category_slug' => $categorySlug,
+            'tag_slug' => $tagSlug,
+        );
+
+        $results = $this->postRepository->publicListing($filters, (int) $request->input('page', 1), 12);
+        
+        if ($status !== '' || $productType !== '') {
+            $filteredData = array();
+            foreach ($results['data'] as $post) {
+                $metaFields = $this->metaRepository->getByPostId($post['id']);
+                $postStatus = isset($metaFields['product_status']) ? trim(strtolower((string)$metaFields['product_status'])) : '';
+                $postType = isset($metaFields['product_type']) ? trim(strtolower((string)$metaFields['product_type'])) : '';
+                
+                if ($status !== '' && strtolower($status) !== $postStatus) {
+                    continue;
+                }
+                if ($productType !== '' && strtolower($productType) !== $postType) {
+                    continue;
+                }
+                $filteredData[] = $post;
+            }
+            $results['data'] = $filteredData;
+            $results['pagination']['total'] = count($filteredData);
+            $results['pagination']['pages'] = 1;
+        }
+
+        $allCategories = $this->categoryRepository->allCategories();
+        $allTags = $this->tagRepository->allTags();
+
+        return $this->view('site/lab', array(
+            'siteName' => (string) $this->app->config()->get('app.name', 'Developer Ruhban'),
+            'products' => $results['data'],
+            'pagination' => $results['pagination'],
+            'categories' => $allCategories,
+            'tags' => $allTags,
+            'filters' => array(
+                'search' => $search,
+                'category' => $categorySlug,
+                'tag' => $tagSlug,
+                'status' => $status,
+                'product_type' => $productType
+            )
+        ), array(
+            'meta' => array(
+                'title' => 'Lab - Product Showcase',
+                'description' => 'Explore the custom applications, experiments, templates, and tools built in Ruhban\'s Lab.',
+                'canonical' => url('/lab'),
+                'schemaType' => 'CollectionPage',
+                'robots' => 'index, follow',
+            ),
+            'breadcrumbs' => $this->breadcrumbs(array(
+                array('label' => 'Home', 'url' => url('/')),
+                array('label' => 'Lab', 'url' => url('/lab')),
+            )),
+        ));
+    }
+
+    public function labProduct(Request $request, string $slug)
+    {
+        $post = $this->postRepository->findPublishedBySlug($slug);
+
+        if (!$post) {
+            throw new HttpException('Product not found.', 404);
+        }
+
+        $categories = $this->mapItemsByIds($this->categoryRepository->allCategories(), $this->postRepository->categoriesForPost($post['id']));
+        $tags = $this->mapItemsByIds($this->tagRepository->allTags(), $this->postRepository->tagsForPost($post['id']));
+        $seo = $this->seoRepository->findByPostId($post['id']);
+        $metaFields = $this->metaRepository->getByPostId($post['id']);
+
+        $this->postRepository->recordView((int) $post['id']);
+        $identity = $this->interactionIdentity();
+        $this->engagementRepository->recordHistory((int) $post['id'], $identity);
+
+        $featuredImage = !empty($post['featured_image']) ? asset($post['featured_image']) : asset('assets/images/seo-card.svg');
+        $contentHtml = $this->optimizeContentImages((string) $post['content']);
+
+        return $this->view('site/lab-detail', array(
+            'siteName' => (string) $this->app->config()->get('app.name', 'Developer Ruhban'),
+            'post' => $post,
+            'contentHtml' => $contentHtml,
+            'categories' => $categories,
+            'tags' => $tags,
+            'seo' => $seo ?: array(),
+            'metaFields' => $metaFields,
+            'author' => $this->userRepository->findByUsername($post['author_username']),
+            'comments' => $this->engagementRepository->commentsForPost((int) $post['id']),
+            'interactionCounts' => $this->engagementRepository->interactionCounts((int) $post['id']),
+            'interactionState' => $this->engagementRepository->interactionState((int) $post['id'], $identity),
+            'relatedProducts' => $this->postRepository->relatedPublished($post['id'], $post['content_type_id'], array_map(static function (array $item): int {
+                return (int) $item['id'];
+            }, $categories), 3),
+        ), array(
+            'meta' => array(
+                'title' => $this->contentTitle($post, $seo),
+                'description' => $this->contentDescription($post, $seo),
+                'canonical' => url('/lab/' . $slug),
+                'schemaType' => 'SoftwareApplication',
+                'robots' => 'index, follow',
+                'ogImage' => $featuredImage,
+            ),
+            'breadcrumbs' => $this->breadcrumbs(array(
+                array('label' => 'Home', 'url' => url('/')),
+                array('label' => 'Lab', 'url' => url('/lab')),
+                array('label' => $post['title'], 'url' => url('/lab/' . $slug)),
+            )),
+        ));
+    }
+
+    public function showLogin(Request $request)
+    {
+        return $this->view('site/login', array(
+            'errors' => array(),
+            'old' => array(),
+            'siteName' => (string) $this->app->config()->get('app.name', 'Developer Ruhban'),
+        ), array(
+            'meta' => array(
+                'title' => 'Sign In - Developer Ruhban',
+                'description' => 'Login to your account to browse developer content and access Lab projects.',
+                'canonical' => url('/login'),
+                'robots' => 'noindex, nofollow',
+            ),
+            'breadcrumbs' => $this->breadcrumbs(array(
+                array('label' => 'Home', 'url' => url('/')),
+                array('label' => 'Login', 'url' => url('/login')),
+            )),
+        ));
+    }
+
+    public function login(Request $request)
+    {
+        $email = trim((string) $request->input('email', ''));
+        $password = (string) $request->input('password', '');
+        $errors = array();
+
+        if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $errors['email'] = 'Enter a valid email address.';
+        }
+
+        if ($password === '') {
+            $errors['password'] = 'Password is required.';
+        }
+
+        if ($errors !== array()) {
+            return $this->view('site/login', array(
+                'errors' => $errors,
+                'old' => array('email' => $email),
+                'siteName' => (string) $this->app->config()->get('app.name', 'Developer Ruhban'),
+            ), array(
+                'meta' => array('title' => 'Sign In - Developer Ruhban', 'robots' => 'noindex, nofollow')
+            ));
+        }
+
+        $user = $this->userRepository->findByEmail($email);
+
+        if (!$user || !password_verify($password, (string) $user['password'])) {
+            return $this->view('site/login', array(
+                'errors' => array('general' => 'Invalid email or password.'),
+                'old' => array('email' => $email),
+                'siteName' => (string) $this->app->config()->get('app.name', 'Developer Ruhban'),
+            ), array(
+                'meta' => array('title' => 'Sign In - Developer Ruhban', 'robots' => 'noindex, nofollow')
+            ));
+        }
+
+        if (empty($user['is_active'])) {
+            return $this->view('site/login', array(
+                'errors' => array('general' => 'Your account is deactivated.'),
+                'old' => array('email' => $email),
+                'siteName' => (string) $this->app->config()->get('app.name', 'Developer Ruhban'),
+            ), array(
+                'meta' => array('title' => 'Sign In - Developer Ruhban', 'robots' => 'noindex, nofollow')
+            ));
+        }
+
+        // Store session
+        $this->app->session()->set((string) $this->app->config()->get('auth.session_key', 'auth_user'), array(
+            'id' => $user['id'],
+            'username' => $user['username'],
+            'name' => $user['name'],
+            'email' => $user['email'],
+            'role' => $user['role_slug'],
+            'role_name' => $user['role_name'],
+        ));
+
+        $this->userRepository->updateLastLogin($user['id']);
+        $this->app->session()->flash('success', 'Welcome back, ' . $user['name'] . '.');
+
+        return $this->redirect('/lab');
+    }
+
+    public function logout(Request $request)
+    {
+        $this->app->session()->forget((string) $this->app->config()->get('auth.session_key', 'auth_user'));
+        $this->app->session()->flash('success', 'You have been signed out.');
+
+        return $this->redirect('/login');
+    }
+
+    public function showSignup(Request $request)
+    {
+        return $this->view('site/signup', array(
+            'errors' => array(),
+            'old' => array(),
+            'siteName' => (string) $this->app->config()->get('app.name', 'Developer Ruhban'),
+        ), array(
+            'meta' => array(
+                'title' => 'Create Account - Developer Ruhban',
+                'description' => 'Register a free account to explore lab projects and articles.',
+                'canonical' => url('/signup'),
+                'robots' => 'noindex, nofollow',
+            ),
+            'breadcrumbs' => $this->breadcrumbs(array(
+                array('label' => 'Home', 'url' => url('/')),
+                array('label' => 'Register', 'url' => url('/signup')),
+            )),
+        ));
+    }
+
+    public function signup(Request $request)
+    {
+        $name = trim((string) $request->input('name', ''));
+        $username = trim((string) $request->input('username', ''));
+        $email = trim((string) $request->input('email', ''));
+        $password = (string) $request->input('password', '');
+        $errors = array();
+
+        if ($name === '') {
+            $errors['name'] = 'Name is required.';
+        }
+        if ($username === '' || strlen($username) < 3) {
+            $errors['username'] = 'Username must be at least 3 characters.';
+        }
+        if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $errors['email'] = 'Enter a valid email address.';
+        }
+        if (strlen($password) < 6) {
+            $errors['password'] = 'Password must be at least 6 characters.';
+        }
+
+        if ($errors === array()) {
+            $existingUser = $this->userRepository->findByEmail($email);
+            if ($existingUser) {
+                $errors['email'] = 'Email is already registered.';
+            }
+            $existingUsername = $this->userRepository->findByUsername($username);
+            if ($existingUsername) {
+                $errors['username'] = 'Username is already taken.';
+            }
+        }
+
+        if ($errors !== array()) {
+            return $this->view('site/signup', array(
+                'errors' => $errors,
+                'old' => array('name' => $name, 'username' => $username, 'email' => $email),
+                'siteName' => (string) $this->app->config()->get('app.name', 'Developer Ruhban'),
+            ), array(
+                'meta' => array('title' => 'Create Account - Developer Ruhban', 'robots' => 'noindex, nofollow')
+            ));
+        }
+
+        // Get role ID for 'visitor' or default role
+        $roleId = 4; // Assuming visitor role is 4 as standard from schema setup
+        
+        $payload = array(
+            'role_id' => $roleId,
+            'username' => $username,
+            'name' => $name,
+            'email' => $email,
+            'password' => password_hash($password, PASSWORD_BCRYPT),
+            'is_active' => 1,
+            'created_at' => date('Y-m-d H:i:s'),
+            'updated_at' => date('Y-m-d H:i:s'),
+        );
+
+        $db = $this->app->database()->connection();
+        $stmt = $db->prepare('INSERT INTO users (role_id, username, name, email, password, is_active, created_at, updated_at) VALUES (:role_id, :username, :name, :email, :password, :is_active, :created_at, :updated_at)');
+        $stmt->execute($payload);
+
+        $this->app->session()->flash('success', 'Registration successful! Please sign in.');
+        return $this->redirect('/login');
+    }
 }

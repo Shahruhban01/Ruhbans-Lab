@@ -1,0 +1,225 @@
+.hero--home {
+    border-radius: var(--ui-radius-xl);
+    overflow: clip;
+    background: radial-gradient(circle at 80% 20%, rgba(79, 70, 229, 0.08), transparent 40%), var(--ui-surface);
+}
+
+.hero__panel { display: grid; gap: 1.25rem; }
+
+.site-footer {
+    margin-top: 5rem;
+    padding: 3rem 0;
+    border-top: 1px solid var(--ui-border);
+    background: var(--ui-surface-strong);
+}
+
+.site-footer__grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 2rem;
+    align-items: start;
+}
+
+.site-footer__text {
+    color: var(--ui-muted);
+    font-size: 0.95rem;
+    max-width: 320px;
+}
+
+.site-footer__copyright {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--ui-border);
+    color: var(--ui-muted);
+    font-size: 0.9rem;
+}
+
+.site-main {
+    padding-top: 2.5rem;
+}
+
+.breadcrumbs-wrap {
+    padding-top: 1.5rem;
+}
+
+.breadcrumbs {
+    color: var(--ui-muted);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.breadcrumbs a { color: var(--ui-muted); }
+.breadcrumbs a:hover { color: var(--ui-primary); }
+
+.page-hero,
+.article-body,
+.search-toolbar,
+.search-sidebar,
+.contact-form,
+.newsletter-form,
+.panel,
+.card-surface,
+.error-page .card-surface,
+.empty-state {
+    position: relative;
+    border-radius: var(--ui-radius-lg);
+    background: var(--ui-surface);
+    border: 1px solid var(--ui-border);
+    box-shadow: var(--ui-shadow-sm);
+}
+
+.page-hero { padding: 2.5rem; }
+.page-hero--split { padding: 2.5rem; }
+.page-hero .lead { margin-bottom: 0; }
+
+.hero__actions { margin-top: 1rem; display: flex; gap: 1rem; }
+
+.module-card { min-height: 180px; }
+.module-card p { color: var(--ui-muted); font-size: 0.95rem; }
+
+.post-card h2,
+.post-card h3,
+.module-card h3,
+.page-hero h2,
+.section-head h2,
+.panel__head h3,
+.admin-quickbar h2 {
+    margin: 0;
+}
+
+.post-card h2 a,
+.post-card h3 a,
+.module-card h3 a,
+.post-list-mini strong,
+.tree-row strong,
+.list-row strong,
+.activity-item strong {
+    color: var(--ui-text);
+    transition: color var(--ui-transition);
+}
+
+.post-card h2 a:hover,
+.post-card h3 a:hover,
+.module-card h3 a:hover {
+    color: var(--ui-primary);
+}
+
+.post-card p,
+.module-card p,
+.tree-row span,
+.list-row p,
+.activity-item p,
+.revision-item p,
+.comment-card__body,
+.page-hero .lead {
+    color: var(--ui-muted);
+}
+
+.content-detail {
+    gap: 2rem;
+}
+
+.article-body {
+    padding: 2.5rem;
+}
+
+.article-meta-fields,
+.share-panel,
+.interaction-panel,
+.notifications-panel,
+.comments-section,
+.article-taxonomy,
+.article-meta-fields,
+.article-body > * + * {
+    margin-top: 1.5rem;
+}
+
+.meta-list,
+.meta-list--grid {
+    display: grid;
+    gap: 1rem;
+}
+
+.meta-list--grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.meta-list dt { color: var(--ui-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.12em; font-weight: 600; }
+.meta-list dd { margin: 0.25rem 0 0; font-weight: 500; }
+
+.comment-form textarea,
+.reply-form textarea,
+.contact-form textarea {
+    resize: vertical;
+    min-height: 140px;
+}
+
+.comments-section { padding-bottom: 1rem; }
+
+.contact-grid .panel,
+.card-surface.panel,
+.search-sidebar.panel,
+.search-toolbar.panel,
+.author-card.panel,
+.notifications-panel.panel,
+.interaction-panel.panel {
+    display: grid;
+    gap: 1.25rem;
+}
+
+.error-page { padding: 4rem 0; text-align: center; }
+.error-page .panel { display: grid; gap: 1rem; max-width: 500px; margin-inline: auto; padding: 2.5rem; }
+
+.search-page .page-hero { gap: 1.25rem; }
+
+.search-filter-grid label,
+.content-split-grid label,
+.content-filter-grid label,
+.comment-form label,
+.reply-form label,
+.contact-form label,
+.auth-form label,
+.newsletter-form label {
+    display: grid;
+    gap: 0.5rem;
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
+.search-checkbox { display: flex; align-items: center; gap: 0.75rem; }
+
+.search-page .search-form { margin-top: 1rem; }
+.search-page .search-summary { font-weight: 600; }
+
+.search-page .stat-card strong,
+.admin-quickbar h2,
+.page-hero h1,
+.hero h1 {
+    font-weight: 800;
+}
+
+.author-banner {
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--ui-border);
+}
+
+.about-page .two-column-grid,
+.privacy-page .card-surface,
+.terms-page .card-surface,
+.contact-page .card-surface {
+    max-width: 100%;
+}
+
+.content-actions .btn,
+.hero__actions .btn,
+.site-footer__links a,
+.breadcrumbs a {
+    white-space: nowrap;
+}
+
+@media (max-width: 760px) {
+    .site-footer__grid {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+    }
+    .meta-list--grid { grid-template-columns: 1fr; }
+    .hero__actions .btn,
+    .content-actions .btn { width: 100%; }
+}
