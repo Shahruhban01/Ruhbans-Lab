@@ -12,6 +12,8 @@ final class PostRepository extends BaseRepository
 
     private const ALLOWED_STATUSES = array('draft', 'published', 'scheduled', 'archived');
 
+    private ?bool $contentMetricsTableExists = null;
+
     public function paginateAdmin(array $filters = array(), int $page = 1, int $perPage = 15): array
     {
         $page = max(1, $page);
@@ -236,7 +238,23 @@ final class PostRepository extends BaseRepository
     public function recent(int $limit = 5): array
     {
         $limit = max(1, min(50, $limit));
-        $statement = $this->connection->prepare('SELECT p.*, ct.name AS content_type_name, ct.slug AS content_type_slug, COALESCE(cm.view_count, 0) AS view_count FROM posts p LEFT JOIN content_types ct ON ct.id = p.content_type_id LEFT JOIN content_metrics cm ON cm.post_id = p.id WHERE p.deleted_at IS NULL ORDER BY p.created_at DESC LIMIT :limit');
+        $sql = 'SELECT p.*, ct.name AS content_type_name, ct.slug AS content_type_slug';
+
+        if ($this->hasContentMetricsTable()) {
+            $sql .= ', COALESCE(cm.view_count, 0) AS view_count';
+        } else {
+            $sql .= ', 0 AS view_count';
+        }
+
+        $sql .= ' FROM posts p LEFT JOIN content_types ct ON ct.id = p.content_type_id';
+
+        if ($this->hasContentMetricsTable()) {
+            $sql .= ' LEFT JOIN content_metrics cm ON cm.post_id = p.id';
+        }
+
+        $sql .= ' WHERE p.deleted_at IS NULL ORDER BY p.created_at DESC LIMIT :limit';
+
+        $statement = $this->connection->prepare($sql);
         $statement->bindValue(':limit', $limit, PDO::PARAM_INT);
         $statement->execute();
 
@@ -278,8 +296,14 @@ final class PostRepository extends BaseRepository
         $joins = array(
             'LEFT JOIN content_types ct ON ct.id = p.content_type_id',
             'LEFT JOIN users u ON u.id = p.author_id',
-            'LEFT JOIN content_metrics cm ON cm.post_id = p.id',
         );
+
+        $hasMetricsTable = $this->hasContentMetricsTable();
+
+        if ($hasMetricsTable) {
+            $joins[] = 'LEFT JOIN content_metrics cm ON cm.post_id = p.id';
+        }
+
         $where = array('p.deleted_at IS NULL', 'p.status = "published"', 'p.visibility = "public"');
         $sort = isset($filters['sort']) ? trim((string) $filters['sort']) : 'relevance';
 
@@ -331,14 +355,22 @@ final class PostRepository extends BaseRepository
 
         $whereSql = ' WHERE ' . implode(' AND ', $where);
         $joinSql = ' ' . implode(' ', $joins);
-        $orderSql = $this->buildPublicOrderBy($sort, $search !== '');
+        $orderSql = $this->buildPublicOrderBy($sort, $search !== '', $hasMetricsTable);
 
         $countSql = 'SELECT COUNT(DISTINCT p.id) FROM posts p' . $joinSql . $whereSql;
         $countStatement = $this->connection->prepare($countSql);
         $countStatement->execute($bindings);
         $total = (int) $countStatement->fetchColumn();
 
-        $sql = 'SELECT DISTINCT p.*, ct.name AS content_type_name, ct.slug AS content_type_slug, u.name AS author_name, u.username AS author_username, COALESCE(cm.view_count, 0) AS view_count, COALESCE(cm.search_count, 0) AS search_count FROM posts p' . $joinSql . $whereSql . ' ORDER BY ' . $orderSql . ' LIMIT :limit OFFSET :offset';
+        $sql = 'SELECT DISTINCT p.*, ct.name AS content_type_name, ct.slug AS content_type_slug, u.name AS author_name, u.username AS author_username';
+
+        if ($hasMetricsTable) {
+            $sql .= ', COALESCE(cm.view_count, 0) AS view_count, COALESCE(cm.search_count, 0) AS search_count';
+        } else {
+            $sql .= ', 0 AS view_count, 0 AS search_count';
+        }
+
+        $sql .= ' FROM posts p' . $joinSql . $whereSql . ' ORDER BY ' . $orderSql . ' LIMIT :limit OFFSET :offset';
         $statement = $this->connection->prepare($sql);
 
         foreach ($bindings as $key => $value) {
@@ -453,6 +485,10 @@ final class PostRepository extends BaseRepository
 
     private function upsertMetrics(int $postId, int $viewIncrement, int $searchIncrement, bool $trackView): void
     {
+        if (!$this->hasContentMetricsTable()) {
+            return;
+        }
+
         $statement = $this->connection->prepare('INSERT INTO content_metrics (post_id, view_count, search_count, last_viewed_at, last_searched_at, created_at, updated_at) VALUES (:post_id, :view_count, :search_count, :last_viewed_at, :last_searched_at, :created_at, :updated_at) ON DUPLICATE KEY UPDATE view_count = view_count + VALUES(view_count), search_count = search_count + VALUES(search_count), last_viewed_at = COALESCE(VALUES(last_viewed_at), last_viewed_at), last_searched_at = COALESCE(VALUES(last_searched_at), last_searched_at), updated_at = VALUES(updated_at)');
         $now = date('Y-m-d H:i:s');
         $statement->execute(array(
@@ -466,7 +502,7 @@ final class PostRepository extends BaseRepository
         ));
     }
 
-    private function buildPublicOrderBy(string $sort, bool $hasSearch): string
+    private function buildPublicOrderBy(string $sort, bool $hasSearch, bool $hasMetricsTable = true): string
     {
         switch ($sort) {
             case 'newest':
@@ -476,6 +512,10 @@ final class PostRepository extends BaseRepository
             case 'updated':
                 return 'COALESCE(p.updated_at, p.created_at) DESC, p.id DESC';
             case 'popular':
+                if (!$hasMetricsTable) {
+                    return 'COALESCE(p.published_at, p.created_at) DESC, p.id DESC';
+                }
+
                 return 'COALESCE(cm.view_count, 0) DESC, COALESCE(cm.search_count, 0) DESC, COALESCE(cm.last_viewed_at, p.published_at, p.created_at) DESC';
             case 'featured':
                 return 'p.featured_flag DESC, COALESCE(p.published_at, p.created_at) DESC, p.id DESC';
@@ -489,6 +529,23 @@ final class PostRepository extends BaseRepository
 
                 return 'COALESCE(p.published_at, p.created_at) DESC, p.id DESC';
         }
+    }
+
+    private function hasContentMetricsTable(): bool
+    {
+        if ($this->contentMetricsTableExists !== null) {
+            return $this->contentMetricsTableExists;
+        }
+
+        try {
+            $statement = $this->connection->prepare('SELECT 1 FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name = :table_name LIMIT 1');
+            $statement->execute(array('table_name' => 'content_metrics'));
+            $this->contentMetricsTableExists = (bool) $statement->fetchColumn();
+        } catch (\Throwable $exception) {
+            $this->contentMetricsTableExists = false;
+        }
+
+        return $this->contentMetricsTableExists;
     }
 
     private function normalizeStatusFilter(string $status): ?string

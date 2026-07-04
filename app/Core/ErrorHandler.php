@@ -43,12 +43,12 @@ final class ErrorHandler
             'trace' => $this->debug ? $exception->getTraceAsString() : null,
         ]);
 
-        $statusCode = $exception->getCode();
-        if ($statusCode < 400 || $statusCode > 599) {
-            $statusCode = 500;
+        $statusCode = $this->normalizeStatusCode($exception->getCode());
+
+        if (!headers_sent()) {
+            http_response_code($statusCode);
         }
 
-        http_response_code($statusCode);
         $template = 'errors/500';
 
         if ($statusCode === 404) {
@@ -68,6 +68,23 @@ final class ErrorHandler
             ],
             'layout' => false,
         ]);
+    }
+
+    private function normalizeStatusCode($code): int
+    {
+        if (is_int($code) && $code >= 400 && $code <= 599) {
+            return $code;
+        }
+
+        if (is_string($code) && ctype_digit($code)) {
+            $statusCode = (int) $code;
+
+            if ($statusCode >= 400 && $statusCode <= 599) {
+                return $statusCode;
+            }
+        }
+
+        return 500;
     }
 
     public function handleShutdown(): void
