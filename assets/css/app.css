@@ -1001,6 +1001,10 @@ a:hover {
     box-shadow: var(--shadow-soft);
 }
 
+.search-suggestions[hidden] {
+    display: none !important;
+}
+
 .search-suggestions__item {
     display: grid;
     gap: 0.15rem;

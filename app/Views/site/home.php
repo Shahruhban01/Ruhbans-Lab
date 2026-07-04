@@ -11,10 +11,6 @@ $archiveMonths = isset($archiveMonths) && is_array($archiveMonths) ? $archiveMon
         <p class="eyebrow">Public developer knowledge platform</p>
         <h1><?php echo e($siteName); ?></h1>
         <p class="lead">A content-first platform for tutorials, guides, notes, and reviews with strong SEO defaults, readable design, and a shared-hosting friendly architecture.</p>
-        <form class="site-search" action="<?php echo e(url('/search')); ?>" method="get" data-search-form data-search-suggest-endpoint="<?php echo e(url('/search/suggest')); ?>">
-            <input type="search" name="q" value="<?php echo e($search); ?>" placeholder="Search content, categories, authors, or keywords" data-search-input autocomplete="off">
-            <button class="btn btn-primary" type="submit">Search</button>
-        </form>
         <div class="hero__actions">
             <a class="btn btn-primary" href="<?php echo e(url('/archive')); ?>">Browse archive</a>
             <a class="btn btn-secondary" href="<?php echo e(url('/about')); ?>">Learn more</a>

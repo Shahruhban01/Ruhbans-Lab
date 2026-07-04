@@ -136,12 +136,14 @@
             input.insertAdjacentElement('afterend', suggestionContainer);
         }
 
+        let isFocused = false;
+
         const resultsContainer = document.querySelector('[data-search-results]');
         const summaryNode = document.querySelector('[data-search-summary]');
 
         const requestSuggestions = debounce(async () => {
             const term = input.value.trim();
-            if (!suggestionEndpoint || term.length < 2) {
+            if (!suggestionEndpoint || term.length < 2 || !isFocused) {
                 suggestionContainer.hidden = true;
                 return;
             }
@@ -180,6 +182,20 @@
         input.addEventListener('input', () => {
             requestSuggestions();
             requestInstantResults();
+        });
+
+        input.addEventListener('focus', () => {
+            isFocused = true;
+            if (input.value.trim().length >= 2) {
+                requestSuggestions();
+            }
+        });
+
+        input.addEventListener('blur', () => {
+            window.setTimeout(() => {
+                isFocused = false;
+                suggestionContainer.hidden = true;
+            }, 120);
         });
 
         document.addEventListener('click', (event) => {

@@ -21,6 +21,7 @@ final class PostRepository extends BaseRepository
         $offset = ($page - 1) * $perPage;
         $where = array('p.deleted_at IS NULL');
         $bindings = array();
+        $searchOrderBindings = array();
 
         $status = $this->normalizeStatusFilter(isset($filters['status']) ? (string) $filters['status'] : 'all');
         if ($status !== null) {
@@ -36,8 +37,9 @@ final class PostRepository extends BaseRepository
 
         $search = $this->normalizeSearchTerm(isset($filters['search']) ? (string) $filters['search'] : '');
         if ($search !== '') {
-            $where[] = '(p.title LIKE :search OR p.slug LIKE :search OR p.excerpt LIKE :search OR ct.name LIKE :search OR u.name LIKE :search)';
-            $bindings['search'] = '%' . $search . '%';
+            $searchExpression = $this->buildLikeSearchExpression(array('p.title', 'p.slug', 'p.excerpt', 'ct.name', 'u.name'), $search, $bindings, 'admin_search');
+            $where[] = $searchExpression['where'];
+            $searchOrderBindings = $searchExpression['bindings'];
         }
 
         $whereSql = implode(' AND ', $where);
@@ -293,6 +295,7 @@ final class PostRepository extends BaseRepository
         $perPage = max(1, min(50, $perPage));
         $offset = ($page - 1) * $perPage;
         $bindings = array();
+        $searchOrderBindings = array();
         $joins = array(
             'LEFT JOIN content_types ct ON ct.id = p.content_type_id',
             'LEFT JOIN users u ON u.id = p.author_id',
@@ -309,8 +312,9 @@ final class PostRepository extends BaseRepository
 
         $search = $this->normalizeSearchTerm(isset($filters['search']) ? (string) $filters['search'] : '');
         if ($search !== '') {
-            $where[] = '(p.title LIKE :search OR p.slug LIKE :search OR p.excerpt LIKE :search OR p.content LIKE :search OR ct.name LIKE :search OR u.name LIKE :search)';
-            $bindings['search'] = '%' . $search . '%';
+            $searchExpression = $this->buildLikeSearchExpression(array('p.title', 'p.slug', 'p.excerpt', 'p.content', 'ct.name', 'u.name'), $search, $bindings, 'public_search');
+            $where[] = $searchExpression['where'];
+            $searchOrderBindings = $searchExpression['bindings'];
         }
 
         $typeSlug = isset($filters['type_slug']) ? trim((string) $filters['type_slug']) : '';
@@ -355,7 +359,7 @@ final class PostRepository extends BaseRepository
 
         $whereSql = ' WHERE ' . implode(' AND ', $where);
         $joinSql = ' ' . implode(' ', $joins);
-        $orderSql = $this->buildPublicOrderBy($sort, $search !== '', $hasMetricsTable);
+        $orderSql = $this->buildPublicOrderBy($sort, $search !== '', $hasMetricsTable, $searchOrderBindings);
 
         $countSql = 'SELECT COUNT(DISTINCT p.id) FROM posts p' . $joinSql . $whereSql;
         $countStatement = $this->connection->prepare($countSql);
@@ -373,7 +377,7 @@ final class PostRepository extends BaseRepository
         $sql .= ' FROM posts p' . $joinSql . $whereSql . ' ORDER BY ' . $orderSql . ' LIMIT :limit OFFSET :offset';
         $statement = $this->connection->prepare($sql);
 
-        foreach ($bindings as $key => $value) {
+        foreach (array_merge($bindings, $searchOrderBindings) as $key => $value) {
             $statement->bindValue(':' . $key, $value);
         }
 
@@ -502,7 +506,7 @@ final class PostRepository extends BaseRepository
         ));
     }
 
-    private function buildPublicOrderBy(string $sort, bool $hasSearch, bool $hasMetricsTable = true): string
+    private function buildPublicOrderBy(string $sort, bool $hasSearch, bool $hasMetricsTable = true, array $searchBindings = array()): string
     {
         switch ($sort) {
             case 'newest':
@@ -524,11 +528,56 @@ final class PostRepository extends BaseRepository
             case 'relevance':
             default:
                 if ($hasSearch) {
-                    return 'CASE WHEN p.title LIKE :search THEN 0 WHEN p.slug LIKE :search THEN 1 WHEN p.excerpt LIKE :search THEN 2 WHEN p.content LIKE :search THEN 3 WHEN ct.name LIKE :search THEN 4 WHEN u.name LIKE :search THEN 5 ELSE 6 END ASC, COALESCE(p.published_at, p.created_at) DESC, p.id DESC';
+                    return $this->buildRelevanceOrderBy($searchBindings) . ', COALESCE(p.published_at, p.created_at) DESC, p.id DESC';
                 }
 
                 return 'COALESCE(p.published_at, p.created_at) DESC, p.id DESC';
         }
+    }
+
+    private function buildLikeSearchExpression(array $columns, string $search, array &$bindings, string $prefix): array
+    {
+        $likeValue = '%' . $search . '%';
+        $conditions = array();
+
+        foreach (array_values($columns) as $index => $column) {
+            $placeholder = $prefix . '_' . $index;
+            $bindings[$placeholder] = $likeValue;
+            $conditions[] = $column . ' LIKE :' . $placeholder;
+        }
+
+        return array(
+            'where' => '(' . implode(' OR ', $conditions) . ')',
+            'bindings' => $bindings,
+        );
+    }
+
+    private function buildRelevanceOrderBy(array $searchBindings): string
+    {
+        if ($searchBindings === array()) {
+            return 'COALESCE(p.published_at, p.created_at) DESC, p.id DESC';
+        }
+
+        $priorityMap = array(
+            'p.title' => 0,
+            'p.slug' => 1,
+            'p.excerpt' => 2,
+            'p.content' => 3,
+            'ct.name' => 4,
+            'u.name' => 5,
+        );
+
+        $parts = array('CASE');
+
+        foreach ($searchBindings as $placeholder => $value) {
+            foreach ($priorityMap as $column => $priority) {
+                $parts[] = 'WHEN ' . $column . ' LIKE :' . $placeholder . ' THEN ' . $priority;
+            }
+        }
+
+        $parts[] = 'ELSE 6 END ASC';
+
+        return implode(' ', $parts);
     }
 
     private function hasContentMetricsTable(): bool
