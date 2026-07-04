@@ -4,6 +4,14 @@ $tags = isset($tags) && is_array($tags) ? $tags : array();
 $relatedPosts = isset($relatedPosts) && is_array($relatedPosts) ? $relatedPosts : array();
 $author = isset($author) && is_array($author) ? $author : array();
 $seo = isset($seo) && is_array($seo) ? $seo : array();
+$comments = isset($comments) && is_array($comments) ? $comments : array();
+$interactionCounts = isset($interactionCounts) && is_array($interactionCounts) ? $interactionCounts : array('likes' => 0, 'bookmarks' => 0, 'favorites' => 0, 'comments' => 0);
+$interactionState = isset($interactionState) && is_array($interactionState) ? $interactionState : array('like' => false, 'bookmark' => false, 'favorite' => false);
+$readingHistory = isset($readingHistory) && is_array($readingHistory) ? $readingHistory : array();
+$activityFeed = isset($activityFeed) && is_array($activityFeed) ? $activityFeed : array();
+$notifications = isset($notifications) && is_array($notifications) ? $notifications : array();
+$notificationCount = isset($notificationCount) ? (int) $notificationCount : 0;
+$currentUser = isset($currentUser) && is_array($currentUser) ? $currentUser : app()->session()->get(config('auth.session_key', 'auth_user'));
 $publishedAt = !empty($post['published_at']) ? $post['published_at'] : $post['created_at'];
 ?>
 <article class="container content-detail" data-reading-progress-container>
@@ -74,6 +82,54 @@ $publishedAt = !empty($post['published_at']) ? $post['published_at'] : $post['cr
                     <a href="https://twitter.com/intent/tweet?url=<?php echo e(url('/content/' . $post['slug'])); ?>&text=<?php echo e(rawurlencode($post['title'])); ?>" rel="noopener noreferrer" target="_blank">X</a>
                     <a href="https://www.linkedin.com/sharing/share-offsite/?url=<?php echo e(url('/content/' . $post['slug'])); ?>" rel="noopener noreferrer" target="_blank">LinkedIn</a>
                     <a href="mailto:?subject=<?php echo e(rawurlencode($post['title'])); ?>&body=<?php echo e(rawurlencode(url('/content/' . $post['slug']))); ?>">Email</a>
+                    <button type="button" class="share-copy-button" data-copy-link data-copy-url="<?php echo e(url('/content/' . $post['slug'])); ?>">Copy link</button>
+                </div>
+            </section>
+
+            <section class="interaction-panel card-surface panel">
+                <div class="section-head section-head--compact">
+                    <div>
+                        <p class="eyebrow">Engagement</p>
+                        <h2>Reactions</h2>
+                    </div>
+                </div>
+                <div class="reaction-grid">
+                    <form method="post" action="<?php echo e(url('/content/' . $post['id'] . '/react/like')); ?>">
+                        <?php echo csrf_field(); ?>
+                        <button type="submit" class="reaction-button<?php echo !empty($interactionState['like']) ? ' reaction-button--active' : ''; ?>">Like <span><?php echo e(isset($interactionCounts['likes']) ? $interactionCounts['likes'] : 0); ?></span></button>
+                    </form>
+                    <form method="post" action="<?php echo e(url('/content/' . $post['id'] . '/react/bookmark')); ?>">
+                        <?php echo csrf_field(); ?>
+                        <button type="submit" class="reaction-button<?php echo !empty($interactionState['bookmark']) ? ' reaction-button--active' : ''; ?>">Bookmark <span><?php echo e(isset($interactionCounts['bookmarks']) ? $interactionCounts['bookmarks'] : 0); ?></span></button>
+                    </form>
+                    <form method="post" action="<?php echo e(url('/content/' . $post['id'] . '/react/favorite')); ?>">
+                        <?php echo csrf_field(); ?>
+                        <button type="submit" class="reaction-button<?php echo !empty($interactionState['favorite']) ? ' reaction-button--active' : ''; ?>">Favorite <span><?php echo e(isset($interactionCounts['favorites']) ? $interactionCounts['favorites'] : 0); ?></span></button>
+                    </form>
+                </div>
+                <div class="interaction-stats">
+                    <span><?php echo e(isset($interactionCounts['comments']) ? $interactionCounts['comments'] : 0); ?> comments</span>
+                    <span><?php echo e($notificationCount); ?> notifications</span>
+                </div>
+            </section>
+
+            <section class="notifications-panel card-surface panel">
+                <div class="section-head section-head--compact">
+                    <div>
+                        <p class="eyebrow">Notifications</p>
+                        <h2>Recent updates</h2>
+                    </div>
+                </div>
+                <div class="post-list-mini">
+                    <?php if ($notifications === array()) : ?>
+                        <div class="empty-inline">No notifications yet.</div>
+                    <?php endif; ?>
+                    <?php foreach ($notifications as $notification) : ?>
+                        <a href="<?php echo e(!empty($notification['url']) ? $notification['url'] : url('/content/' . $post['slug'])); ?>">
+                            <strong><?php echo e($notification['title']); ?></strong>
+                            <span><?php echo e($notification['body']); ?></span>
+                        </a>
+                    <?php endforeach; ?>
                 </div>
             </section>
         </div>
@@ -96,7 +152,85 @@ $publishedAt = !empty($post['published_at']) ? $post['published_at'] : $post['cr
                     <div><dt>Schema</dt><dd><?php echo e(isset($seo['schema_type']) && $seo['schema_type'] ? $seo['schema_type'] : 'Article'); ?></dd></div>
                 </dl>
             </section>
+
+            <section class="card-surface panel">
+                <p class="eyebrow">Reading history</p>
+                <h2>Recent reads</h2>
+                <div class="post-list-mini">
+                    <?php if ($readingHistory === array()) : ?>
+                        <div class="empty-inline">No reading history yet.</div>
+                    <?php endif; ?>
+                    <?php foreach ($readingHistory as $history) : ?>
+                        <a href="<?php echo e(url('/content/' . $history['slug'])); ?>">
+                            <strong><?php echo e($history['title']); ?></strong>
+                            <span><?php echo e(isset($history['content_type_name']) ? $history['content_type_name'] : 'Content'); ?></span>
+                        </a>
+                    <?php endforeach; ?>
+                </div>
+            </section>
+
+            <section class="card-surface panel">
+                <p class="eyebrow">Activity feed</p>
+                <h2>Latest engagement</h2>
+                <div class="post-list-mini">
+                    <?php if ($activityFeed === array()) : ?>
+                        <div class="empty-inline">No recent activity yet.</div>
+                    <?php endif; ?>
+                    <?php foreach ($activityFeed as $activity) : ?>
+                        <a href="<?php echo e(!empty($activity['url']) ? $activity['url'] : url('/content/' . $post['slug'])); ?>">
+                            <strong><?php echo e($activity['title']); ?></strong>
+                            <span><?php echo e(isset($activity['event_type']) ? ucfirst($activity['event_type']) : 'Activity'); ?></span>
+                        </a>
+                    <?php endforeach; ?>
+                </div>
+            </section>
         </aside>
+    </section>
+
+    <section class="section-stack comments-section">
+        <div class="section-head">
+            <div>
+                <p class="eyebrow">Comments</p>
+                <h2>Discussion</h2>
+            </div>
+            <span class="search-summary"><?php echo e(isset($interactionCounts['comments']) ? $interactionCounts['comments'] : 0); ?> comments</span>
+        </div>
+
+        <section class="card-surface panel">
+            <form class="comment-form" method="post" action="<?php echo e(url('/content/' . $post['id'] . '/comments')); ?>">
+                <?php echo csrf_field(); ?>
+                <input type="hidden" name="parent_id" value="0">
+                <label>
+                    <span>Comment</span>
+                    <textarea name="body" rows="5" required maxlength="2000" placeholder="Share a helpful thought, question, or correction."></textarea>
+                </label>
+                <?php if (!is_array($currentUser)) : ?>
+                    <div class="comment-form__grid">
+                        <label>
+                            <span>Name</span>
+                            <input type="text" name="guest_name" maxlength="120" required>
+                        </label>
+                        <label>
+                            <span>Email</span>
+                            <input type="email" name="guest_email" maxlength="190" required>
+                        </label>
+                    </div>
+                <?php endif; ?>
+                <button class="btn btn-primary" type="submit">Post comment</button>
+            </form>
+        </section>
+
+        <div class="comment-thread">
+            <?php if ($comments === array()) : ?>
+                <article class="card-surface empty-state">
+                    <h3>No comments yet</h3>
+                    <p>Start the discussion with the first comment.</p>
+                </article>
+            <?php endif; ?>
+            <?php foreach ($comments as $comment) : ?>
+                <?php echo view('site/partials/comment', array('comment' => $comment, 'post' => $post, 'currentUser' => $currentUser), array('layout' => false)); ?>
+            <?php endforeach; ?>
+        </div>
     </section>
 
     <section class="section-stack">

@@ -5,6 +5,8 @@ $categories = isset($categories) && is_array($categories) ? $categories : array(
 $tags = isset($tags) && is_array($tags) ? $tags : array();
 $contentTypes = isset($contentTypes) && is_array($contentTypes) ? $contentTypes : array();
 $archiveMonths = isset($archiveMonths) && is_array($archiveMonths) ? $archiveMonths : array();
+$activityFeed = isset($activityFeed) && is_array($activityFeed) ? $activityFeed : array();
+$readingHistory = isset($readingHistory) && is_array($readingHistory) ? $readingHistory : array();
 ?>
 <section class="hero hero--home container">
     <div class="hero__copy">
@@ -43,6 +45,48 @@ $archiveMonths = isset($archiveMonths) && is_array($archiveMonths) ? $archiveMon
             </article>
         <?php endforeach; ?>
     </div>
+</section>
+
+<section class="container section-stack two-column-grid">
+    <section class="card-surface panel">
+        <div class="section-head section-head--compact">
+            <div>
+                <p class="eyebrow">Activity feed</p>
+                <h2>Latest engagement</h2>
+            </div>
+        </div>
+        <div class="post-list-mini">
+            <?php if ($activityFeed === array()) : ?>
+                <div class="empty-inline">No recent activity yet.</div>
+            <?php endif; ?>
+            <?php foreach ($activityFeed as $activity) : ?>
+                <a href="<?php echo e(!empty($activity['url']) ? $activity['url'] : url('/archive')); ?>">
+                    <strong><?php echo e($activity['title']); ?></strong>
+                    <span><?php echo e(isset($activity['event_type']) ? ucfirst($activity['event_type']) : 'Activity'); ?></span>
+                </a>
+            <?php endforeach; ?>
+        </div>
+    </section>
+
+    <section class="card-surface panel">
+        <div class="section-head section-head--compact">
+            <div>
+                <p class="eyebrow">Reading history</p>
+                <h2>Continue reading</h2>
+            </div>
+        </div>
+        <div class="post-list-mini">
+            <?php if ($readingHistory === array()) : ?>
+                <div class="empty-inline">Your recent reads will appear here.</div>
+            <?php endif; ?>
+            <?php foreach ($readingHistory as $history) : ?>
+                <a href="<?php echo e(url('/content/' . $history['slug'])); ?>">
+                    <strong><?php echo e($history['title']); ?></strong>
+                    <span><?php echo e(isset($history['content_type_name']) ? $history['content_type_name'] : 'Content'); ?></span>
+                </a>
+            <?php endforeach; ?>
+        </div>
+    </section>
 </section>
 
 <section class="container section-stack">

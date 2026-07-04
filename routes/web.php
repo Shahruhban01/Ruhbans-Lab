@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Controllers\SiteController;
 use App\Controllers\SearchController;
+use App\Controllers\EngagementController;
 use App\Core\Router;
 
 return static function (Router $router): void {
@@ -19,6 +20,10 @@ return static function (Router $router): void {
     $router->get('/content/{slug}', [SiteController::class, 'content']);
     $router->get('/about', [SiteController::class, 'about']);
     $router->get('/contact', [SiteController::class, 'contact']);
+    $router->post('/contact', [EngagementController::class, 'contact'], array('csrf'));
+    $router->post('/newsletter/subscribe', [EngagementController::class, 'newsletter'], array('csrf'));
+    $router->post('/content/{postId}/comments', [EngagementController::class, 'comment'], array('csrf'));
+    $router->post('/content/{postId}/react/{type}', [EngagementController::class, 'react'], array('csrf'));
     $router->get('/privacy-policy', [SiteController::class, 'privacy']);
     $router->get('/terms-and-conditions', [SiteController::class, 'terms']);
 };

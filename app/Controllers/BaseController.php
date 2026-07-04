@@ -36,4 +36,46 @@ abstract class BaseController
     {
         return Response::redirect($url, $statusCode);
     }
+
+    protected function currentUser(): ?array
+    {
+        $user = $this->app->session()->get($this->app->config()->get('auth.session_key', 'auth_user'));
+
+        return is_array($user) ? $user : null;
+    }
+
+    protected function interactionIdentity(): array
+    {
+        $currentUser = $this->currentUser();
+
+        if ($currentUser !== null && isset($currentUser['id'])) {
+            $userId = (int) $currentUser['id'];
+
+            return array(
+                'actor_type' => 'user',
+                'actor_key' => 'user:' . $userId,
+                'user_id' => $userId,
+                'guest_token' => null,
+                'display_name' => isset($currentUser['name']) ? (string) $currentUser['name'] : 'User',
+                'email' => isset($currentUser['email']) ? (string) $currentUser['email'] : '',
+            );
+        }
+
+        $sessionKey = 'interaction_guest_token';
+
+        if (!$this->app->session()->has($sessionKey)) {
+            $this->app->session()->set($sessionKey, bin2hex(random_bytes(16)));
+        }
+
+        $guestToken = (string) $this->app->session()->get($sessionKey, '');
+
+        return array(
+            'actor_type' => 'guest',
+            'actor_key' => 'guest:' . $guestToken,
+            'user_id' => null,
+            'guest_token' => $guestToken,
+            'display_name' => 'Guest',
+            'email' => '',
+        );
+    }
 }

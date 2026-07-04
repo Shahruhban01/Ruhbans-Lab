@@ -1216,6 +1216,204 @@ a:hover {
     background: rgba(31, 79, 255, 0.04);
 }
 
+.share-copy-button {
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    padding: 0.5rem 0.8rem;
+    background: rgba(31, 79, 255, 0.04);
+    color: var(--color-text);
+    cursor: pointer;
+}
+
+.flash-message {
+    margin: 0 0 1rem;
+    padding: 0.95rem 1.1rem;
+    border-radius: 1rem;
+    border: 1px solid var(--color-border);
+}
+
+.flash-message--success {
+    background: rgba(28, 176, 99, 0.08);
+}
+
+.flash-message--error {
+    background: rgba(224, 36, 94, 0.08);
+}
+
+.interaction-panel,
+.notifications-panel,
+.comments-section,
+.contact-form,
+.newsletter-form {
+    display: grid;
+    gap: 0.9rem;
+}
+
+.reaction-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+}
+
+.reaction-grid form,
+.reaction-grid button {
+    width: 100%;
+}
+
+.reaction-button {
+    border: 1px solid var(--color-border);
+    border-radius: 1rem;
+    padding: 0.85rem 1rem;
+    background: rgba(31, 79, 255, 0.04);
+    color: var(--color-text);
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    cursor: pointer;
+}
+
+.reaction-button--active {
+    border-color: var(--color-primary);
+    background: rgba(31, 79, 255, 0.12);
+}
+
+.interaction-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    color: var(--color-muted);
+    font-size: 0.92rem;
+}
+
+.comment-form,
+.reply-form {
+    display: grid;
+    gap: 0.85rem;
+}
+
+.comment-form label,
+.reply-form label,
+.contact-form label,
+.newsletter-form label {
+    display: grid;
+    gap: 0.35rem;
+}
+
+.comment-form textarea,
+.reply-form textarea,
+.contact-form textarea,
+.comment-form input,
+.reply-form input,
+.contact-form input,
+.newsletter-form input {
+    width: 100%;
+}
+
+.comment-form__grid,
+.contact-form__grid,
+.newsletter-form__row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.85rem;
+}
+
+.comment-thread {
+    display: grid;
+    gap: 1rem;
+}
+
+.comment-card {
+    padding: 1rem 1.1rem;
+    display: grid;
+    gap: 0.8rem;
+}
+
+.comment-card[data-comment-depth='1'] {
+    margin-left: 1.5rem;
+}
+
+.comment-card[data-comment-depth='2'] {
+    margin-left: 3rem;
+}
+
+.comment-card__top {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    color: var(--color-muted);
+}
+
+.comment-card__top strong {
+    display: block;
+    color: var(--color-text);
+}
+
+.comment-card__body {
+    color: var(--color-text);
+}
+
+.reply-disclosure {
+    border-top: 1px solid var(--color-border);
+    padding-top: 0.75rem;
+}
+
+.reply-disclosure summary {
+    cursor: pointer;
+    color: var(--color-primary);
+    font-weight: 600;
+}
+
+.comment-replies {
+    display: grid;
+    gap: 0.85rem;
+}
+
+.empty-inline {
+    color: var(--color-muted);
+    font-size: 0.95rem;
+    padding: 0.5rem 0;
+}
+
+.newsletter-form {
+    justify-self: end;
+    min-width: min(360px, 100%);
+}
+
+.newsletter-form__row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+}
+
+.newsletter-form__row input {
+    min-width: 0;
+}
+
+.newsletter-form input,
+.contact-form input,
+.contact-form textarea,
+.comment-form input,
+.comment-form textarea,
+.reply-form input,
+.reply-form textarea {
+    padding: 0.9rem 1rem;
+    border-radius: 16px;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    color: var(--color-text);
+}
+
+.contact-form {
+    margin-top: 1rem;
+}
+
+.site-footer__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) auto;
+    gap: 1.5rem;
+    align-items: start;
+    padding: 2rem 0;
+}
+
 .article-kicker {
     align-items: center;
     margin-bottom: 0.5rem;
@@ -1293,6 +1491,10 @@ a:hover {
     .search-sidebar {
         position: static;
     }
+
+    .site-footer__grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 @media (max-width: 860px) {
@@ -1321,6 +1523,18 @@ a:hover {
 
     .search-filter-grid {
         grid-template-columns: 1fr;
+    }
+
+    .reaction-grid,
+    .comment-form__grid,
+    .contact-form__grid,
+    .newsletter-form__row {
+        grid-template-columns: 1fr;
+    }
+
+    .comment-card[data-comment-depth='1'],
+    .comment-card[data-comment-depth='2'] {
+        margin-left: 0;
     }
 }
 

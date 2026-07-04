@@ -53,7 +53,7 @@ ON DUPLICATE KEY UPDATE
     name = VALUES(name);
 
 INSERT INTO users (role_id, username, name, email, password, avatar, bio, website, github, linkedin, twitter, is_active)
-SELECT r.id, 'editorial-author', 'Editorial Author', 'editorial@developer-ruhban.example', '$2y$10$XeqUzRTLSSb17RtKChtIZu894CYxLz.Hl0y/Pw6czOVwoG965JbRC', NULL, 'Editorial contributor for the public knowledge base.', 'https://developer-ruhban.example', NULL, NULL, NULL, 1
+SELECT r.id, 'editorial-author', 'Editorial Author', 'admin@developerruhban.space', '$2y$10$QY2r.JDUV5RNhBMzMf9UsOT0/nXwSfueAYrEdUPhiHkmmToA05Z1y', NULL, 'Editorial contributor for the public knowledge base.', 'https://developer-ruhban.example', NULL, NULL, NULL, 1
 FROM roles r
 WHERE r.slug = 'author'
 LIMIT 1

@@ -8,6 +8,7 @@ use App\Core\Application;
 use App\Core\HttpException;
 use App\Core\Request;
 use App\Repositories\CategoryRepository;
+use App\Repositories\EngagementRepository;
 use App\Repositories\ContentTypeRepository;
 use App\Repositories\PostMetaRepository;
 use App\Repositories\PostRepository;
@@ -24,6 +25,7 @@ final class SiteController extends BaseController
     private UserRepository $userRepository;
     private PostSeoRepository $seoRepository;
     private PostMetaRepository $metaRepository;
+    private EngagementRepository $engagementRepository;
 
     public function __construct(Application $app)
     {
@@ -37,6 +39,7 @@ final class SiteController extends BaseController
         $this->userRepository = new UserRepository($connection);
         $this->seoRepository = new PostSeoRepository($connection);
         $this->metaRepository = new PostMetaRepository($connection);
+        $this->engagementRepository = new EngagementRepository($connection);
     }
 
     public function home(Request $request)
@@ -50,6 +53,8 @@ final class SiteController extends BaseController
             'contentTypes' => $this->contentTypeRepository->allTypes(),
             'archiveMonths' => $this->postRepository->archiveMonths(6),
             'search' => trim((string) $request->input('q', $request->input('search', ''))),
+            'activityFeed' => $this->engagementRepository->recentActivity(6),
+            'readingHistory' => $this->engagementRepository->recentHistory($this->interactionIdentity(), 5),
         ), array(
             'meta' => array(
                 'title' => 'Developer Ruhban - Home',
@@ -161,6 +166,8 @@ final class SiteController extends BaseController
         $seo = $this->seoRepository->findByPostId($post['id']);
 
         $this->postRepository->recordView((int) $post['id']);
+        $identity = $this->interactionIdentity();
+        $this->engagementRepository->recordHistory((int) $post['id'], $identity);
 
         return $this->view('site/content', array(
             'siteName' => (string) $this->app->config()->get('app.name', 'Developer Ruhban'),
@@ -173,6 +180,13 @@ final class SiteController extends BaseController
                 return (int) $item['id'];
             }, $categories), 3),
             'author' => $this->userRepository->findByUsername($post['author_username']),
+            'comments' => $this->engagementRepository->commentsForPost((int) $post['id']),
+            'interactionCounts' => $this->engagementRepository->interactionCounts((int) $post['id']),
+            'interactionState' => $this->engagementRepository->interactionState((int) $post['id'], $identity),
+            'readingHistory' => $this->engagementRepository->recentHistory($identity, 5),
+            'activityFeed' => $this->engagementRepository->recentActivity(5),
+            'notifications' => is_array($this->currentUser()) && isset($this->currentUser()['id']) ? $this->engagementRepository->notificationsForUser((int) $this->currentUser()['id'], 5) : array(),
+            'notificationCount' => is_array($this->currentUser()) && isset($this->currentUser()['id']) ? $this->engagementRepository->unreadNotificationCount((int) $this->currentUser()['id']) : 0,
         ), array(
             'meta' => array(
                 'title' => $this->contentTitle($post, $seo),
@@ -208,7 +222,11 @@ final class SiteController extends BaseController
 
     public function contact(Request $request)
     {
-        return $this->view('site/contact', array('siteName' => (string) $this->app->config()->get('app.name', 'Developer Ruhban')), array(
+        return $this->view('site/contact', array(
+            'siteName' => (string) $this->app->config()->get('app.name', 'Developer Ruhban'),
+            'flashSuccess' => $this->app->session()->pullFlash('success'),
+            'flashError' => $this->app->session()->pullFlash('error'),
+        ), array(
             'meta' => array(
                 'title' => 'Contact - Developer Ruhban',
                 'description' => 'Reach out to the Developer Ruhban team for collaborations, feedback, or support.',

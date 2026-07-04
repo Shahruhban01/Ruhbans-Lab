@@ -112,6 +112,35 @@
         }
 
         resultsContainer.innerHTML = results.length ? results.map(renderPostCard).join('') : `
+
+    const copyLinkButton = document.querySelector('[data-copy-link]');
+
+    if (copyLinkButton) {
+        copyLinkButton.addEventListener('click', async () => {
+            const copyUrl = copyLinkButton.getAttribute('data-copy-url') || window.location.href;
+
+            try {
+                if (window.navigator.clipboard && window.isSecureContext) {
+                    await window.navigator.clipboard.writeText(copyUrl);
+                } else {
+                    const tempInput = document.createElement('input');
+                    tempInput.value = copyUrl;
+                    document.body.appendChild(tempInput);
+                    tempInput.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(tempInput);
+                }
+
+                const originalText = copyLinkButton.textContent;
+                copyLinkButton.textContent = 'Copied';
+                window.setTimeout(() => {
+                    copyLinkButton.textContent = originalText;
+                }, 1400);
+            } catch (error) {
+                copyLinkButton.textContent = 'Copy failed';
+            }
+        });
+    }
             <article class="card-surface empty-state">
                 <h2>No results yet</h2>
                 <p>Try a different keyword, remove a filter, or use the discovery panels below.</p>

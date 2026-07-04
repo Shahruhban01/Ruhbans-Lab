@@ -1,0 +1,23 @@
+CREATE TABLE IF NOT EXISTS comments (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    post_id BIGINT UNSIGNED NOT NULL,
+    parent_id BIGINT UNSIGNED NULL,
+    user_id BIGINT UNSIGNED NULL,
+    guest_name VARCHAR(120) NULL,
+    guest_email VARCHAR(190) NULL,
+    body TEXT NOT NULL,
+    status VARCHAR(20) NOT NULL DEFAULT 'published',
+    actor_key VARCHAR(80) NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NULL DEFAULT NULL,
+    deleted_at DATETIME NULL DEFAULT NULL,
+    CONSTRAINT fk_comments_post_id FOREIGN KEY (post_id) REFERENCES posts (id) ON DELETE CASCADE,
+    CONSTRAINT fk_comments_parent_id FOREIGN KEY (parent_id) REFERENCES comments (id) ON DELETE CASCADE,
+    CONSTRAINT fk_comments_user_id FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE SET NULL,
+    INDEX idx_comments_post_id (post_id),
+    INDEX idx_comments_parent_id (parent_id),
+    INDEX idx_comments_user_id (user_id),
+    INDEX idx_comments_status (status),
+    INDEX idx_comments_created_at (created_at),
+    INDEX idx_comments_actor_key (actor_key)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

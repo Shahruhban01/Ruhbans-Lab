@@ -8,6 +8,8 @@ $robots = $meta['robots'] ?? 'index, follow';
 $theme = $_COOKIE['theme'] ?? 'system';
 $breadcrumbs = isset($breadcrumbs) && is_array($breadcrumbs) ? $breadcrumbs : array();
 $currentPath = trim(request()->path(), '/');
+$flashSuccess = app()->session()->pullFlash('success');
+$flashError = app()->session()->pullFlash('error');
 $navigation = array(
     array('label' => 'Home', 'href' => url('/')),
     array('label' => 'Search', 'href' => url('/search')),
@@ -76,6 +78,8 @@ $navigation = array(
     </div>
 <?php endif; ?>
 <main id="content" class="site-main">
+    <?php if ($flashSuccess) : ?><div class="container"><div class="flash-message flash-message--success"><?php echo e($flashSuccess); ?></div></div><?php endif; ?>
+    <?php if ($flashError) : ?><div class="container"><div class="flash-message flash-message--error"><?php echo e($flashError); ?></div></div><?php endif; ?>
     <?php echo $content; ?>
 </main>
 <footer class="site-footer">
@@ -85,6 +89,14 @@ $navigation = array(
                 <a class="brand" href="<?php echo e(url('/')); ?>"><?php echo e(config('app.name', 'Developer Ruhban')); ?></a>
                 <p class="site-footer__text">Content-first developer publishing with SEO, speed, and reusable architecture.</p>
             </div>
+            <form class="newsletter-form" method="post" action="<?php echo e(url('/newsletter/subscribe')); ?>">
+                <?php echo csrf_field(); ?>
+                <p class="eyebrow">Newsletter</p>
+                <div class="newsletter-form__row">
+                    <input type="email" name="email" placeholder="Email address" required>
+                    <button class="btn btn-primary" type="submit">Subscribe</button>
+                </div>
+            </form>
             <div class="site-footer__links">
                 <a href="<?php echo e(url('/search')); ?>">Search</a>
                 <a href="<?php echo e(url('/archive')); ?>">Archive</a>
