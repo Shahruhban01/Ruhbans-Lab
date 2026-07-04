@@ -47,8 +47,10 @@ return static function (Router $router): void {
             $router->post('/tags', [ContentController::class, 'saveTag']);
             $router->get('/types', [ContentController::class, 'contentTypes']);
             $router->post('/types', [ContentController::class, 'saveContentType']);
-            $router->get('/media', [ContentController::class, 'media']);
-            $router->post('/media', [ContentController::class, 'uploadMedia']);
+             $router->get('/media', [ContentController::class, 'media']);
+             $router->post('/media', [ContentController::class, 'uploadMedia']);
+             $router->post('/media/{id}/delete', [ContentController::class, 'deleteMedia']);
+             $router->get('/media-manager', [ContentController::class, 'mediaManager']);
         });
 
         $router->group([

@@ -11,26 +11,30 @@ $role = is_array($currentUser) && isset($currentUser['role_name']) ? $currentUse
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
             Dashboard
         </a>
-        <a class="admin-nav__link" href="<?php echo e(url('/admin/content')); ?>">
+        <a class="admin-nav__link" data-bs-toggle="collapse" href="#contentSubmenu" role="button" aria-expanded="false" aria-controls="contentSubmenu">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-            Content Listing
+            <span>Content Stack</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="ms-auto"><polyline points="6 9 12 15 18 9"></polyline></svg>
         </a>
-        <a class="admin-nav__link" href="<?php echo e(url('/admin/content/drafts')); ?>">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-            Drafts
-        </a>
-        <a class="admin-nav__link" href="<?php echo e(url('/admin/content/categories')); ?>">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
-            Categories
-        </a>
-        <a class="admin-nav__link" href="<?php echo e(url('/admin/content/tags')); ?>">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
-            Tags
-        </a>
-        <a class="admin-nav__link" href="<?php echo e(url('/admin/content/media')); ?>">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-            Media Manager
-        </a>
+        <div class="collapse show" id="contentSubmenu">
+            <div class="ps-3 d-flex flex-column gap-1 mt-1">
+                <a class="admin-nav__link py-2" href="<?php echo e(url('/admin/content')); ?>">
+                    Content Listing
+                </a>
+                <a class="admin-nav__link py-2" href="<?php echo e(url('/admin/content/drafts')); ?>">
+                    Drafts
+                </a>
+                <a class="admin-nav__link py-2" href="<?php echo e(url('/admin/content/categories')); ?>">
+                    Categories
+                </a>
+                <a class="admin-nav__link py-2" href="<?php echo e(url('/admin/content/tags')); ?>">
+                    Tags
+                </a>
+                <a class="admin-nav__link py-2" href="<?php echo e(url('/admin/content/media-manager')); ?>">
+                    Media Manager
+                </a>
+            </div>
+        </div>
         <a class="admin-nav__link" href="<?php echo e(url('/admin/analytics')); ?>">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
             Analytics

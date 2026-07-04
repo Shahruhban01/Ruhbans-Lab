@@ -19,6 +19,7 @@ use App\Services\Admin\ContentService;
 final class ContentController extends BaseAdminController
 {
     private ContentService $contentService;
+    private MediaRepository $mediaRepository;
 
     public function __construct(\App\Core\Application $app)
     {
@@ -30,6 +31,7 @@ final class ContentController extends BaseAdminController
         $tagRepository = new TagRepository($connection);
         $contentTypeRepository = new ContentTypeRepository($connection);
         $mediaRepository = new MediaRepository($connection);
+        $this->mediaRepository = $mediaRepository;
         $revisionRepository = new PostRevisionRepository($connection);
         $seoRepository = new PostSeoRepository($connection);
         $metaRepository = new PostMetaRepository($connection);
@@ -311,13 +313,32 @@ final class ContentController extends BaseAdminController
 
     public function media(Request $request)
     {
+        $search = (string) $request->input('search', '');
+        $page = (int) $request->input('page', 1);
+
         return $this->adminView('admin/content/media', array(
-            'media' => $this->contentService->media(trim((string) $request->input('search', '')), (int) $request->input('page', 1), 20),
-            'currentUser' => $this->app->session()->get($this->app->config()->get('auth.session_key', 'auth_user')),
+            'currentUser' => $this->currentUser(),
+            'media' => $this->mediaRepository->paginateMedia($search, $page, 12),
         ), array(
-            'title' => 'Media Manager',
-            'description' => 'Manage uploaded media assets.',
+            'title' => 'Media Library',
+            'description' => 'Browse and manage your uploads.',
             'canonical' => url('/admin/content/media'),
+            'robots' => 'noindex, nofollow',
+        ));
+    }
+
+    public function mediaManager(Request $request)
+    {
+        $search = (string) $request->input('search', '');
+        $page = (int) $request->input('page', 1);
+
+        return $this->adminView('admin/content/media-manager', array(
+            'currentUser' => $this->currentUser(),
+            'media' => $this->mediaRepository->paginateMedia($search, $page, 20),
+        ), array(
+            'title' => 'Media Manager Dashboard',
+            'description' => 'Interactive asset library with advanced CRUD table operations.',
+            'canonical' => url('/admin/content/media-manager'),
             'robots' => 'noindex, nofollow',
         ));
     }
@@ -332,7 +353,31 @@ final class ContentController extends BaseAdminController
             $this->app->session()->flash('success', 'Media uploaded successfully.');
         }
 
-        return $this->redirect('/admin/content/media');
+        $referer = (string) $request->header('Referer', '');
+        $redirectUrl = strpos($referer, 'media-manager') !== false ? '/admin/content/media-manager' : '/admin/content/media';
+        return $this->redirect($redirectUrl);
+    }
+
+    public function deleteMedia(Request $request, $id)
+    {
+        $connection = $this->app->database()->connection();
+        $mediaRepo = new \App\Repositories\MediaRepository($connection);
+        
+        $media = $mediaRepo->find($id);
+        if ($media) {
+            $filePath = base_path($media['path']);
+            if (is_file($filePath)) {
+                @unlink($filePath);
+            }
+            $mediaRepo->delete($id);
+            $this->app->session()->flash('success', 'Media deleted successfully.');
+        } else {
+            $this->app->session()->flash('error', 'Media file not found.');
+        }
+
+        $referer = (string) $request->header('Referer', '');
+        $redirectUrl = strpos($referer, 'media-manager') !== false ? '/admin/content/media-manager' : '/admin/content/media';
+        return $this->redirect($redirectUrl);
     }
 
     private function currentUserId(): int

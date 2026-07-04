@@ -12,7 +12,8 @@ $ogType = $meta['ogType'] ?? ($schemaType === 'Article' || $schemaType === 'Blog
 $twitterCard = $meta['twitterCard'] ?? 'summary_large_image';
 $twitterCreator = $meta['twitterCreator'] ?? '@developerruhban';
 $generator = $meta['generator'] ?? 'Developer Ruhban CMS';
-$theme = $_COOKIE['theme'] ?? 'system';
+$dbDefaultTheme = (new \App\Repositories\SettingRepository(app()->database()->connection()))->value('theme.default', 'light');
+$theme = $_COOKIE['theme'] ?? $dbDefaultTheme;
 $breadcrumbs = isset($breadcrumbs) && is_array($breadcrumbs) ? $breadcrumbs : array();
 $schemaData = isset($meta['schema']) && is_array($meta['schema']) ? $meta['schema'] : array();
 $currentPath = trim(request()->path(), '/');

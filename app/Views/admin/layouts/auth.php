@@ -4,7 +4,8 @@ $title = $meta['title'] ?? 'Admin Login';
 $description = $meta['description'] ?? 'Secure admin authentication.';
 $canonical = $meta['canonical'] ?? url(request()->path());
 $robots = $meta['robots'] ?? 'noindex, nofollow';
-$theme = $_COOKIE['theme'] ?? 'system';
+$dbDefaultTheme = (new \App\Repositories\SettingRepository(app()->database()->connection()))->value('theme.default', 'light');
+$theme = $_COOKIE['theme'] ?? $dbDefaultTheme;
 $flashSuccess = app()->session()->pullFlash('success');
 $flashError = app()->session()->pullFlash('error');
 

@@ -73,7 +73,14 @@ $maintenanceMode = !empty($maintenanceMode);
             </form>
             <form class="auth-form" method="post" action="<?php echo e(url('/admin/settings/save/theme')); ?>">
                 <?php echo csrf_field(); ?>
-                <label><span>Default theme</span><input type="text" name="theme__default" value="<?php echo e(isset($theme['theme.default']) ? $theme['theme.default'] : 'system'); ?>"></label>
+                <label>
+                    <span>Default theme</span>
+                    <select name="theme__default" class="form-select">
+                        <option value="light"<?php echo (isset($theme['theme.default']) ? $theme['theme.default'] : 'light') === 'light' ? ' selected' : ''; ?>>Light</option>
+                        <option value="dark"<?php echo (isset($theme['theme.default']) ? $theme['theme.default'] : 'light') === 'dark' ? ' selected' : ''; ?>>Dark</option>
+                        <option value="system"<?php echo (isset($theme['theme.default']) ? $theme['theme.default'] : 'light') === 'system' ? ' selected' : ''; ?>>System Default</option>
+                    </select>
+                </label>
                 <label><span>Accent color</span><input type="text" name="theme__accent_color" value="<?php echo e(isset($theme['theme.accent_color']) ? $theme['theme.accent_color'] : '#f97316'); ?>"></label>
                 <label><span>Surface style</span><input type="text" name="theme__surface_style" value="<?php echo e(isset($theme['theme.surface_style']) ? $theme['theme.surface_style'] : 'soft'); ?>"></label>
                 <button class="btn btn-primary" type="submit">Save theme settings</button>
