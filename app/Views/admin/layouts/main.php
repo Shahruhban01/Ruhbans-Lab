@@ -9,6 +9,7 @@ $theme = $_COOKIE['theme'] ?? 'system';
 $currentUser = isset($currentUser) ? $currentUser : app()->session()->get(config('auth.session_key', 'auth_user'));
 $flashSuccess = app()->session()->pullFlash('success');
 $flashError = app()->session()->pullFlash('error');
+$commandHint = 'Search content, settings, analytics, backups...';
 
 ?>
 <!DOCTYPE html>
@@ -47,6 +48,17 @@ $flashError = app()->session()->pullFlash('error');
             <?php if ($flashError) : ?>
                 <div class="flash-message flash-message--error"><?php echo e($flashError); ?></div>
             <?php endif; ?>
+            <div class="admin-quickbar card-surface panel">
+                <div>
+                    <p class="eyebrow">Command search</p>
+                    <h2><?php echo e($commandHint); ?></h2>
+                </div>
+                <div class="content-actions">
+                    <a class="btn btn-secondary" href="<?php echo e(url('/admin/content/create')); ?>">New post</a>
+                    <a class="btn btn-secondary" href="<?php echo e(url('/admin/media')); ?>">Upload media</a>
+                    <a class="btn btn-secondary" href="<?php echo e(url('/admin/settings')); ?>">Settings</a>
+                </div>
+            </div>
             <?php echo $content; ?>
         </main>
     </div>

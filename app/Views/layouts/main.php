@@ -20,12 +20,10 @@ $flashSuccess = app()->session()->pullFlash('success');
 $flashError = app()->session()->pullFlash('error');
 $navigation = array(
     array('label' => 'Home', 'href' => url('/')),
-    array('label' => 'Search', 'href' => url('/search')),
     array('label' => 'Archive', 'href' => url('/archive')),
+    array('label' => 'Search', 'href' => url('/search')),
     array('label' => 'About', 'href' => url('/about')),
     array('label' => 'Contact', 'href' => url('/contact')),
-    array('label' => 'Privacy', 'href' => url('/privacy-policy')),
-    array('label' => 'Terms', 'href' => url('/terms-and-conditions')),
 );
 
 ?>
@@ -114,10 +112,13 @@ $navigation = array(
                 <a class="site-nav__link<?php echo trim(parse_url($item['href'], PHP_URL_PATH), '/') === $currentPath ? ' site-nav__link--active' : ''; ?>" href="<?php echo e($item['href']); ?>"><?php echo e($item['label']); ?></a>
             <?php endforeach; ?>
         </nav>
-        <button class="theme-toggle" type="button" data-theme-toggle aria-label="Toggle theme">Theme</button>
+        <div class="site-header__actions">
+            <a class="btn btn-secondary btn-sm" href="<?php echo e(url('/search')); ?>">Search</a>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="Toggle theme">Theme</button>
+        </div>
     </div>
 </header>
-<?php if ($breadcrumbs !== array()) : ?>
+    <?php if ($breadcrumbs !== array()) : ?>
     <div class="container breadcrumbs-wrap">
         <nav class="breadcrumbs" aria-label="Breadcrumbs">
             <?php foreach ($breadcrumbs as $index => $crumb) : ?>
@@ -141,7 +142,7 @@ $navigation = array(
         <div class="site-footer__grid">
             <div>
                 <a class="brand" href="<?php echo e(url('/')); ?>"><?php echo e(config('app.name', 'Developer Ruhban')); ?></a>
-                <p class="site-footer__text">Content-first developer publishing with SEO, speed, and reusable architecture.</p>
+                <p class="site-footer__text">Content-first developer publishing with SEO, speed, structured data, and reusable architecture.</p>
             </div>
             <form class="newsletter-form" method="post" action="<?php echo e(url('/newsletter/subscribe')); ?>">
                 <?php echo csrf_field(); ?>

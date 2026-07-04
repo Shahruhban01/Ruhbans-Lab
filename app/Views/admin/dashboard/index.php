@@ -2,15 +2,28 @@
     <div class="page-header">
         <div>
             <p class="eyebrow">Dashboard overview</p>
-            <h2>Statistics</h2>
+            <h2>Command center</h2>
+        </div>
+        <div class="content-actions">
+            <a class="btn btn-primary" href="<?php echo e(url('/admin/content/create')); ?>">New content</a>
+            <a class="btn btn-secondary" href="<?php echo e(url('/admin/settings')); ?>">Settings</a>
+            <a class="btn btn-secondary" href="<?php echo e(url('/admin/analytics')); ?>">Analytics</a>
         </div>
     </div>
 
-    <div class="stat-grid">
-        <?php foreach ($stats as $stat) : ?>
-            <?php echo view('admin/partials/stat-card', $stat, array('layout' => false)); ?>
-        <?php endforeach; ?>
-    </div>
+    <section class="card-surface panel">
+        <div class="section-head section-head--compact">
+            <div>
+                <p class="eyebrow">Overview</p>
+                <h2>Executive summary</h2>
+            </div>
+        </div>
+        <div class="search-stats">
+            <?php foreach ($stats as $stat) : ?>
+                <?php echo view('admin/partials/stat-card', $stat, array('layout' => false)); ?>
+            <?php endforeach; ?>
+        </div>
+    </section>
 
     <div class="grid-two">
         <section class="panel card-surface">

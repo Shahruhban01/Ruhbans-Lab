@@ -10,6 +10,9 @@ $email = is_array($currentUser) && isset($currentUser['email']) ? $currentUser['
             <h1 class="admin-navbar__title"><?php echo e($name); ?></h1>
         </div>
     </div>
+    <div class="admin-navbar__search">
+        <input type="search" placeholder="Search content, users, settings" aria-label="Search admin">
+    </div>
     <div class="admin-navbar__user">
         <div>
             <strong><?php echo e($name); ?></strong>

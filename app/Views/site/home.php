@@ -12,10 +12,14 @@ $readingHistory = isset($readingHistory) && is_array($readingHistory) ? $reading
     <div class="hero__copy">
         <p class="eyebrow">Public developer knowledge platform</p>
         <h1><?php echo e($siteName); ?></h1>
-        <p class="lead">A content-first platform for tutorials, guides, notes, and reviews with strong SEO defaults, readable design, and a shared-hosting friendly architecture.</p>
+        <p class="lead">A premium, content-first platform for tutorials, guides, notes, projects, and reviews with strong SEO defaults, thoughtful navigation, and a shared-hosting friendly architecture.</p>
+        <form class="site-search site-search--wide" action="<?php echo e(url('/search')); ?>" method="get" data-search-form data-search-suggest-endpoint="<?php echo e(url('/search/suggest')); ?>">
+            <input type="search" name="q" placeholder="Search tutorials, projects, tools, and more" data-search-input autocomplete="off">
+            <button class="btn btn-primary" type="submit">Search</button>
+        </form>
         <div class="hero__actions">
             <a class="btn btn-primary" href="<?php echo e(url('/archive')); ?>">Browse archive</a>
-            <a class="btn btn-secondary" href="<?php echo e(url('/about')); ?>">Learn more</a>
+            <a class="btn btn-secondary" href="<?php echo e(url('/search')); ?>">Discover content</a>
         </div>
     </div>
     <aside class="hero__panel card-surface panel">
@@ -24,6 +28,12 @@ $readingHistory = isset($readingHistory) && is_array($readingHistory) ? $reading
             <?php foreach ($contentTypes as $type) : ?>
                 <a class="chip" href="<?php echo e(url('/type/' . $type['slug'])); ?>"><?php echo e($type['name']); ?></a>
             <?php endforeach; ?>
+        </div>
+        <div class="search-stats">
+            <div class="stat-card card-surface"><span>Featured</span><strong><?php echo e(count($featured)); ?></strong></div>
+            <div class="stat-card card-surface"><span>Recent</span><strong><?php echo e(count($recent)); ?></strong></div>
+            <div class="stat-card card-surface"><span>Categories</span><strong><?php echo e(count($categories)); ?></strong></div>
+            <div class="stat-card card-surface"><span>Collections</span><strong><?php echo e(count($archiveMonths)); ?></strong></div>
         </div>
     </aside>
 </section>
@@ -44,6 +54,21 @@ $readingHistory = isset($readingHistory) && is_array($readingHistory) ? $reading
                 <p><?php echo e(!empty($type['description']) ? $type['description'] : 'Browse posts in this content type.'); ?></p>
             </article>
         <?php endforeach; ?>
+    </div>
+</section>
+
+<section class="container section-stack">
+    <div class="section-head">
+        <div>
+            <p class="eyebrow">Statistics</p>
+            <h2>Platform overview</h2>
+        </div>
+    </div>
+    <div class="search-stats">
+        <div class="stat-card card-surface"><span>Featured content</span><strong><?php echo e(count($featured)); ?></strong></div>
+        <div class="stat-card card-surface"><span>Latest posts</span><strong><?php echo e(count($recent)); ?></strong></div>
+        <div class="stat-card card-surface"><span>Content types</span><strong><?php echo e(count($contentTypes)); ?></strong></div>
+        <div class="stat-card card-surface"><span>Active topics</span><strong><?php echo e(count($categories)); ?></strong></div>
     </div>
 </section>
 
@@ -87,6 +112,23 @@ $readingHistory = isset($readingHistory) && is_array($readingHistory) ? $reading
             <?php endforeach; ?>
         </div>
     </section>
+</section>
+
+<section class="container section-stack">
+    <div class="section-head">
+        <div>
+            <p class="eyebrow">Newsletter</p>
+            <h2>Stay updated</h2>
+        </div>
+    </div>
+    <div class="card-surface panel newsletter-form">
+        <p class="lead">Get occasional updates on new tutorials, projects, tools, and platform improvements.</p>
+        <form class="newsletter-form__row" method="post" action="<?php echo e(url('/newsletter/subscribe')); ?>">
+            <?php echo csrf_field(); ?>
+            <input type="email" name="email" placeholder="Email address" required>
+            <button class="btn btn-primary" type="submit">Subscribe</button>
+        </form>
+    </div>
 </section>
 
 <section class="container section-stack">
