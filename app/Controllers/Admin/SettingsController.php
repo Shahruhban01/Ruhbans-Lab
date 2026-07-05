@@ -146,12 +146,6 @@ final class SettingsController extends BaseAdminController
         return $this->redirect('/admin/settings');
     }
 
-    private function currentUserId(): ?int
-    {
-        $user = $this->currentUser();
-
-        return is_array($user) && isset($user['id']) ? (int) $user['id'] : null;
-    }
 
     private function backupFiles(): array
     {

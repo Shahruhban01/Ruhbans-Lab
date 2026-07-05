@@ -68,7 +68,7 @@ final class ErrorHandler
                 'title' => $statusCode === 404 ? 'Page Not Found' : ($statusCode === 403 ? 'Forbidden' : ($statusCode === 419 ? 'Session Expired' : 'Server Error')),
                 'robots' => 'noindex, nofollow',
             ],
-            'layout' => false,
+            'layout' => 'layouts/public',
         ]);
     }
 

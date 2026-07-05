@@ -146,3 +146,87 @@ if (!function_exists('view')) {
         return app()->view()->render($template, $data, $options);
     }
 }
+
+if (!function_exists('has_post_access')) {
+    function has_post_access(array $post): bool
+    {
+        $session = app()->session();
+        $currentUser = $session->get(config('auth.session_key', 'auth_user'));
+        $membership = app()->request()->get('membership', array('plan_slug' => 'free', 'features' => array('read_general')));
+
+        if (is_array($currentUser) && in_array($currentUser['role'] ?? '', array('admin', 'editor'), true)) {
+            return true;
+        }
+
+        if (is_array($currentUser) && (int) ($post['author_id'] ?? 0) === (int) $currentUser['id']) {
+            return true;
+        }
+
+        $visibility = strtolower(trim((string) ($post['visibility'] ?? 'public')));
+
+        switch ($visibility) {
+            case 'public':
+            case 'hidden':
+            case 'unlisted':
+                return true;
+            case 'members_only':
+                return is_array($currentUser) && isset($currentUser['id']);
+            case 'pro':
+                return is_array($currentUser) && in_array($membership['plan_slug'] ?? '', array('pro', 'lifetime'), true);
+            case 'lifetime':
+                return is_array($currentUser) && ($membership['plan_slug'] ?? '') === 'lifetime';
+            case 'private':
+                return false;
+            default:
+                return true;
+        }
+    }
+}
+
+if (!function_exists('has_product_feature_access')) {
+    function has_product_feature_access(array $post, string $feature, array $metaFields): bool
+    {
+        $session = app()->session();
+        $currentUser = $session->get(config('auth.session_key', 'auth_user'));
+        $membership = app()->request()->get('membership', array('plan_slug' => 'free', 'features' => array('read_general')));
+
+        if (is_array($currentUser) && in_array($currentUser['role'] ?? '', array('admin', 'editor'), true)) {
+            return true;
+        }
+
+        if (is_array($currentUser) && (int) ($post['author_id'] ?? 0) === (int) $currentUser['id']) {
+            return true;
+        }
+
+        // Check if one-time purchased
+        $purchasedIds = $session->get('purchased_product_ids', array());
+        if (is_array($purchasedIds) && in_array((int)$post['id'], $purchasedIds, true)) {
+            return true;
+        }
+
+        $requiredAccess = strtolower(trim((string) ($metaFields['access_' . $feature] ?? 'public')));
+
+        // Check overall product visibility restriction
+        $visibility = strtolower(trim((string) ($post['visibility'] ?? 'public')));
+        if ($visibility === 'purchased' && $requiredAccess !== 'public') {
+            return false; // must be purchased
+        }
+
+        switch ($requiredAccess) {
+            case 'public':
+                return true;
+            case 'members_only':
+            case 'members':
+                return is_array($currentUser) && isset($currentUser['id']);
+            case 'pro':
+                return is_array($currentUser) && in_array($membership['plan_slug'] ?? '', array('pro', 'lifetime'), true);
+            case 'lifetime':
+                return is_array($currentUser) && ($membership['plan_slug'] ?? '') === 'lifetime';
+            case 'purchased':
+                return false; // Handled above via $purchasedIds check
+            default:
+                return true;
+        }
+    }
+}
+

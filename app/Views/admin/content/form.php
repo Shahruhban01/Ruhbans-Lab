@@ -112,8 +112,18 @@ $previewUrl = $isEditing ? url('/content/' . $postValue('slug')) : '';
                 <label>
                     <span>Visibility</span>
                     <select name="visibility">
-                        <?php foreach (array('public', 'private', 'unlisted') as $visibility) : ?>
-                            <option value="<?php echo e($visibility); ?>"<?php echo $postValue('visibility', 'public') === $visibility ? ' selected' : ''; ?>><?php echo e(ucfirst($visibility)); ?></option>
+                        <?php 
+                        $visibilities = array(
+                            'public' => 'Public (everyone)',
+                            'members_only' => 'Members Only (any plan)',
+                            'pro' => 'Pro (Pro / Lifetime)',
+                            'lifetime' => 'Lifetime (Lifetime only)',
+                            'private' => 'Private (Admin only)',
+                            'hidden' => 'Hidden (Direct URL only)'
+                        );
+                        foreach ($visibilities as $value => $label) : 
+                        ?>
+                            <option value="<?php echo e($value); ?>"<?php echo $postValue('visibility', 'public') === $value ? ' selected' : ''; ?>><?php echo e($label); ?></option>
                         <?php endforeach; ?>
                     </select>
                 </label>
@@ -212,6 +222,76 @@ $previewUrl = $isEditing ? url('/content/' . $postValue('slug')) : '';
                 </div>
             </section>
 
+            <section class="panel card-surface" id="product-specific-fields" style="display: none;">
+                <h3>Product Settings & Access Controls</h3>
+                
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label><span>Product Version</span><input type="text" name="meta_fields[product_version]" value="<?php echo e($metaValue('product_version', '1.0.0')); ?>"></label>
+                    </div>
+                    <div class="col-md-6">
+                        <label><span>License</span><input type="text" name="meta_fields[product_license]" value="<?php echo e($metaValue('product_license', 'MIT')); ?>"></label>
+                    </div>
+                </div>
+
+                <label><span>Tech Stack (comma separated)</span><input type="text" name="meta_fields[tech_stack]" value="<?php echo e($metaValue('tech_stack')); ?>"></label>
+                <label><span>Requirements</span><input type="text" name="meta_fields[requirements]" value="<?php echo e($metaValue('requirements')); ?>"></label>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label><span>Product Type</span>
+                            <select name="meta_fields[product_type]">
+                                <?php foreach (array('Mobile App', 'Website', 'Web Application', 'AI Tool', 'API', 'Open Source Project', 'Desktop Application', 'Browser Extension', 'Template', 'Script', 'Package', 'Experiment') as $type) : ?>
+                                    <option value="<?php echo e($type); ?>"<?php echo strtolower($metaValue('product_type')) === strtolower($type) ? ' selected' : ''; ?>><?php echo e($type); ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </label>
+                    </div>
+                    <div class="col-md-6">
+                        <label><span>Product Status</span>
+                            <select name="meta_fields[product_status]">
+                                <?php foreach (array('Live', 'Beta', 'Coming Soon', 'Archived') as $status) : ?>
+                                    <option value="<?php echo e($status); ?>"<?php echo strtolower($metaValue('product_status')) === strtolower($status) ? ' selected' : ''; ?>><?php echo e($status); ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </label>
+                    </div>
+                </div>
+
+                <label><span>Live Demo URL</span><input type="url" name="meta_fields[live_demo]" value="<?php echo e($metaValue('live_demo')); ?>"></label>
+                <label><span>Documentation URL</span><input type="url" name="meta_fields[documentation_url]" value="<?php echo e($metaValue('documentation_url')); ?>"></label>
+                <label><span>GitHub Repository URL</span><input type="url" name="meta_fields[github_repository]" value="<?php echo e($metaValue('github_repository')); ?>"></label>
+                <label><span>Download URL</span><input type="url" name="meta_fields[download_url]" value="<?php echo e($metaValue('download_url')); ?>"></label>
+                <label><span>API Documentation</span><textarea name="meta_fields[api_documentation]" rows="3"><?php echo e($metaValue('api_documentation')); ?></textarea></label>
+                <label><span>Installation Guide</span><textarea name="meta_fields[installation_guide]" rows="3"><?php echo e($metaValue('installation_guide')); ?></textarea></label>
+                <label><span>Changelog</span><textarea name="meta_fields[product_changelog]" rows="3"><?php echo e($metaValue('product_changelog')); ?></textarea></label>
+                <label><span>Version History</span><textarea name="meta_fields[product_version_history]" rows="3"><?php echo e($metaValue('product_version_history')); ?></textarea></label>
+
+                <h4 class="mt-4 mb-2 text-muted small fw-semibold text-uppercase">Granular Access Levels</h4>
+                <?php
+                $permissions = array(
+                    'live_demo' => 'Live Demo',
+                    'documentation' => 'Documentation',
+                    'source_code' => 'Source Code',
+                    'download' => 'Download',
+                    'github_repository' => 'GitHub Repository',
+                    'api_documentation' => 'API Documentation',
+                    'installation_guide' => 'Installation Guide'
+                );
+                foreach ($permissions as $key => $label) :
+                ?>
+                    <label class="mb-2">
+                        <span><?php echo e($label); ?> Access Level</span>
+                        <select name="meta_fields[access_<?php echo e($key); ?>]">
+                            <option value="public"<?php echo $metaValue('access_' . $key) === 'public' ? ' selected' : ''; ?>>Public</option>
+                            <option value="members_only"<?php echo $metaValue('access_' . $key) === 'members_only' ? ' selected' : ''; ?>>Members Only (Free)</option>
+                            <option value="pro"<?php echo $metaValue('access_' . $key) === 'pro' ? ' selected' : ''; ?>>Pro</option>
+                            <option value="lifetime"<?php echo $metaValue('access_' . $key) === 'lifetime' ? ' selected' : ''; ?>>Lifetime</option>
+                        </select>
+                    </label>
+                <?php endforeach; ?>
+            </section>
+
             <section class="panel card-surface">
                 <h3>Meta fields</h3>
                 <label><span>Key</span><input type="text" name="meta_fields[key]" value="<?php echo e($metaValue('key')); ?>"></label>
@@ -254,4 +334,23 @@ $previewUrl = $isEditing ? url('/content/' . $postValue('slug')) : '';
     <?php endif; ?>
 </section>
 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const contentTypeSelect = document.querySelector('select[name="content_type_id"]');
+    const productFields = document.getElementById('product-specific-fields');
+    
+    function toggleProductFields() {
+        if (contentTypeSelect && contentTypeSelect.value === '74') {
+            productFields.style.display = 'block';
+        } else if (productFields) {
+            productFields.style.display = 'none';
+        }
+    }
+    
+    if (contentTypeSelect && productFields) {
+        contentTypeSelect.addEventListener('change', toggleProductFields);
+        toggleProductFields();
+    }
+});
+</script>
 <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>

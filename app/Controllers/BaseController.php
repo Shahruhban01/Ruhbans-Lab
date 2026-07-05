@@ -44,6 +44,13 @@ abstract class BaseController
         return is_array($user) ? $user : null;
     }
 
+    protected function currentUserId(): int
+    {
+        $currentUser = $this->currentUser();
+
+        return $currentUser !== null && isset($currentUser['id']) ? (int) $currentUser['id'] : 0;
+    }
+
     protected function interactionIdentity(): array
     {
         $currentUser = $this->currentUser();

@@ -277,7 +277,7 @@ final class PostRepository extends BaseRepository
 
     public function findPublishedBySlug(string $slug)
     {
-        $statement = $this->connection->prepare('SELECT p.*, ct.name AS content_type_name, ct.slug AS content_type_slug, u.name AS author_name, u.username AS author_username, u.avatar AS author_avatar, u.bio AS author_bio, u.website AS author_website, u.github AS author_github, u.linkedin AS author_linkedin, u.twitter AS author_twitter FROM posts p LEFT JOIN content_types ct ON ct.id = p.content_type_id LEFT JOIN users u ON u.id = p.author_id WHERE p.slug = :slug AND p.status = "published" AND p.visibility = "public" AND p.deleted_at IS NULL LIMIT 1');
+        $statement = $this->connection->prepare('SELECT p.*, ct.name AS content_type_name, ct.slug AS content_type_slug, u.name AS author_name, u.username AS author_username, u.avatar AS author_avatar, u.bio AS author_bio, u.website AS author_website, u.github AS author_github, u.linkedin AS author_linkedin, u.twitter AS author_twitter FROM posts p LEFT JOIN content_types ct ON ct.id = p.content_type_id LEFT JOIN users u ON u.id = p.author_id WHERE p.slug = :slug AND p.status = "published" AND p.visibility IN ("public", "members_only", "pro", "lifetime", "hidden", "unlisted") AND p.deleted_at IS NULL LIMIT 1');
         $statement->execute(array('slug' => trim($slug)));
 
         return $statement->fetch(PDO::FETCH_ASSOC);
@@ -285,7 +285,7 @@ final class PostRepository extends BaseRepository
 
     public function findPublishedById($id)
     {
-        $statement = $this->connection->prepare('SELECT p.*, ct.name AS content_type_name, ct.slug AS content_type_slug, u.name AS author_name, u.username AS author_username FROM posts p LEFT JOIN content_types ct ON ct.id = p.content_type_id LEFT JOIN users u ON u.id = p.author_id WHERE p.id = :id AND p.status = "published" AND p.visibility = "public" AND p.deleted_at IS NULL LIMIT 1');
+        $statement = $this->connection->prepare('SELECT p.*, ct.name AS content_type_name, ct.slug AS content_type_slug, u.name AS author_name, u.username AS author_username FROM posts p LEFT JOIN content_types ct ON ct.id = p.content_type_id LEFT JOIN users u ON u.id = p.author_id WHERE p.id = :id AND p.status = "published" AND p.visibility IN ("public", "members_only", "pro", "lifetime", "hidden", "unlisted") AND p.deleted_at IS NULL LIMIT 1');
         $statement->execute(array('id' => (int) $id));
 
         return $statement->fetch(PDO::FETCH_ASSOC);
@@ -309,7 +309,7 @@ final class PostRepository extends BaseRepository
             $joins[] = 'LEFT JOIN content_metrics cm ON cm.post_id = p.id';
         }
 
-        $where = array('p.deleted_at IS NULL', 'p.status = "published"', 'p.visibility = "public"');
+        $where = array('p.deleted_at IS NULL', 'p.status = "published"', 'p.visibility IN ("public", "members_only", "pro", "lifetime")');
         $sort = isset($filters['sort']) ? trim((string) $filters['sort']) : 'relevance';
 
         $search = $this->normalizeSearchTerm(isset($filters['search']) ? (string) $filters['search'] : '');
@@ -415,7 +415,7 @@ final class PostRepository extends BaseRepository
     public function archiveMonths(int $limit = 12): array
     {
         $limit = max(1, min(36, $limit));
-        $statement = $this->connection->prepare('SELECT YEAR(COALESCE(published_at, created_at)) AS year, MONTH(COALESCE(published_at, created_at)) AS month, COUNT(*) AS total FROM posts WHERE status = "published" AND visibility = "public" AND deleted_at IS NULL GROUP BY YEAR(COALESCE(published_at, created_at)), MONTH(COALESCE(published_at, created_at)) ORDER BY year DESC, month DESC LIMIT :limit');
+        $statement = $this->connection->prepare('SELECT YEAR(COALESCE(published_at, created_at)) AS year, MONTH(COALESCE(published_at, created_at)) AS month, COUNT(*) AS total FROM posts WHERE status = "published" AND visibility IN ("public", "members_only", "pro", "lifetime") AND deleted_at IS NULL GROUP BY YEAR(COALESCE(published_at, created_at)), MONTH(COALESCE(published_at, created_at)) ORDER BY year DESC, month DESC LIMIT :limit');
         $statement->bindValue(':limit', $limit, PDO::PARAM_INT);
         $statement->execute();
 
@@ -429,7 +429,7 @@ final class PostRepository extends BaseRepository
         $limit = max(1, min(12, $limit));
         $bindings = array('post_id' => $postId, 'content_type_id' => $contentTypeId);
         $joins = 'LEFT JOIN content_types ct ON ct.id = p.content_type_id LEFT JOIN users u ON u.id = p.author_id';
-        $conditions = array('p.deleted_at IS NULL', 'p.status = "published"', 'p.visibility = "public"', 'p.id <> :post_id');
+        $conditions = array('p.deleted_at IS NULL', 'p.status = "published"', 'p.visibility IN ("public", "members_only", "pro", "lifetime")', 'p.id <> :post_id');
 
         if ($categoryIds !== array()) {
             $placeholders = array();

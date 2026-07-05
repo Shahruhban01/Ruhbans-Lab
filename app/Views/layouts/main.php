@@ -24,6 +24,7 @@ $navigation = array(
     array('label' => 'Archive', 'href' => url('/archive')),
     array('label' => 'Search', 'href' => url('/search')),
     array('label' => 'About', 'href' => url('/about')),
+    array('label' => 'Pricing', 'href' => url('/pricing')),
     array('label' => 'Contact', 'href' => url('/contact')),
 );
 
@@ -125,11 +126,49 @@ $navigation = array(
             <?php endforeach; ?>
         </nav>
         <div class="site-header__actions">
-            <?php if (app()->session()->get(config('auth.session_key', 'auth_user'))) : ?>
-                <span class="text-muted small me-2 d-none d-md-inline"><?php echo e(app()->session()->get(config('auth.session_key', 'auth_user'))['name']); ?></span>
-                <a class="btn btn-secondary btn-sm" href="<?php echo e(url('/logout')); ?>">Sign out</a>
+            <?php 
+            $sessionUser = app()->session()->get(config('auth.session_key', 'auth_user'));
+            if ($sessionUser) : 
+                $userInitials = '';
+                $nameParts = explode(' ', trim($sessionUser['name'] ?? ''));
+                foreach ($nameParts as $part) {
+                    $userInitials .= strtoupper(substr($part, 0, 1));
+                }
+                $userInitials = substr($userInitials, 0, 2);
+            ?>
+                <div class="dropdown d-inline-block">
+                    <button class="btn btn-secondary btn-sm dropdown-toggle d-flex align-items-center gap-2" type="button" id="userMenuDropdownMain" data-bs-toggle="dropdown" aria-expanded="false">
+                        <?php if (!empty($sessionUser['avatar'])) : ?>
+                            <img src="<?php echo e($sessionUser['avatar']); ?>" alt="" style="width:20px; height:20px; border-radius:50%; object-fit:cover;">
+                        <?php else : ?>
+                            <span class="badge bg-primary text-white rounded-circle" style="width:20px; height:20px; font-size:10px; display:inline-flex; align-items:center; justify-content:center;"><?php echo e($userInitials); ?></span>
+                        <?php endif; ?>
+                        <?php echo e(explode(' ', trim($sessionUser['name'] ?? ''))[0]); ?>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userMenuDropdownMain">
+                        <li><a class="dropdown-item" href="<?php echo e(url('/account/dashboard')); ?>">🖥️ Dashboard</a></li>
+                        <li><a class="dropdown-item" href="<?php echo e(url('/account/profile')); ?>">👤 Profile</a></li>
+                        <li><a class="dropdown-item" href="<?php echo e(url('/account/collections')); ?>">📂 My Collections</a></li>
+                        <li><a class="dropdown-item" href="<?php echo e(url('/account/bookmarks')); ?>">🔖 My Bookmarks</a></li>
+                        <li><a class="dropdown-item" href="<?php echo e(url('/account/downloads')); ?>">⬇️ Downloads</a></li>
+                        <li><a class="dropdown-item" href="<?php echo e(url('/account/notifications')); ?>">🔔 Notifications</a></li>
+                        <li><a class="dropdown-item" href="<?php echo e(url('/account/membership')); ?>">⭐ Membership</a></li>
+                        <li><a class="dropdown-item" href="<?php echo e(url('/account/pricing')); ?>">💳 Pricing</a></li>
+                        <li><a class="dropdown-item" href="<?php echo e(url('/account/settings')); ?>">⚙️ Settings</a></li>
+                        <?php 
+                        $allowedRoles = (array) config('auth.allowed_roles', array('admin', 'editor', 'author'));
+                        if (in_array($sessionUser['role'] ?? '', $allowedRoles, true)) : 
+                        ?>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-primary" href="<?php echo e(url('/admin')); ?>">🛠️ Admin CMS</a></li>
+                        <?php endif; ?>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="<?php echo e(url('/logout')); ?>">🚪 Logout</a></li>
+                    </ul>
+                </div>
             <?php else : ?>
                 <a class="btn btn-secondary btn-sm" href="<?php echo e(url('/login')); ?>">Sign in</a>
+                <a class="btn btn-primary btn-sm" href="<?php echo e(url('/signup')); ?>">Sign up</a>
             <?php endif; ?>
             <a class="btn btn-secondary btn-sm" href="<?php echo e(url('/search')); ?>">Search</a>
             <button class="theme-toggle" type="button" data-theme-toggle aria-label="Toggle theme">
@@ -170,6 +209,7 @@ $navigation = array(
                     <a href="<?php echo e(url('/search')); ?>">Search</a>
                     <a href="<?php echo e(url('/archive')); ?>">Archive</a>
                     <a href="<?php echo e(url('/about')); ?>">About</a>
+                    <a href="<?php echo e(url('/pricing')); ?>">Pricing</a>
                     <a href="<?php echo e(url('/contact')); ?>">Contact</a>
                 </div>
             </div>

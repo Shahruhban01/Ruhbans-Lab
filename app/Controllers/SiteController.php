@@ -185,6 +185,25 @@ final class SiteController extends BaseController
             throw new HttpException('Content not found.', 404);
         }
 
+        // Custom premium access block -> Teaser conversion page
+        if (!has_post_access($post)) {
+            $requiredAccess = strtolower(trim((string) ($post['visibility'] ?? 'pro')));
+            $categories = $this->mapItemsByIds($this->categoryRepository->allCategories(), $this->postRepository->categoriesForPost($post['id']));
+            $catIds = array_map(static function (array $item): int { return (int) $item['id']; }, $categories);
+            $relatedFree = $this->postRepository->relatedPublished($post['id'], $post['content_type_id'], $catIds, 2);
+            
+            return $this->view('site/teaser', array(
+                'post' => $post,
+                'requiredAccess' => $requiredAccess,
+                'relatedFree' => $relatedFree,
+            ), array(
+                'meta' => array(
+                    'title' => 'Upgrade Required — ' . $post['title'],
+                    'robots' => 'noindex, nofollow',
+                ),
+            ));
+        }
+
         $categories = $this->mapItemsByIds($this->categoryRepository->allCategories(), $this->postRepository->categoriesForPost($post['id']));
         $tags = $this->mapItemsByIds($this->tagRepository->allTags(), $this->postRepository->tagsForPost($post['id']));
         $seo = $this->seoRepository->findByPostId($post['id']);
@@ -531,6 +550,25 @@ final class SiteController extends BaseController
             throw new HttpException('Product not found.', 404);
         }
 
+        // Custom premium access block -> Teaser conversion page for Lab Products
+        if (!has_post_access($post)) {
+            $requiredAccess = strtolower(trim((string) ($post['visibility'] ?? 'pro')));
+            $categories = $this->mapItemsByIds($this->categoryRepository->allCategories(), $this->postRepository->categoriesForPost($post['id']));
+            $catIds = array_map(static function (array $item): int { return (int) $item['id']; }, $categories);
+            $relatedFree = $this->postRepository->relatedPublished($post['id'], $post['content_type_id'], $catIds, 2);
+            
+            return $this->view('site/teaser', array(
+                'post' => $post,
+                'requiredAccess' => $requiredAccess,
+                'relatedFree' => $relatedFree,
+            ), array(
+                'meta' => array(
+                    'title' => 'Upgrade Required — ' . $post['title'],
+                    'robots' => 'noindex, nofollow',
+                ),
+            ));
+        }
+
         $categories = $this->mapItemsByIds($this->categoryRepository->allCategories(), $this->postRepository->categoriesForPost($post['id']));
         $tags = $this->mapItemsByIds($this->tagRepository->allTags(), $this->postRepository->tagsForPost($post['id']));
         $seo = $this->seoRepository->findByPostId($post['id']);
@@ -745,7 +783,133 @@ final class SiteController extends BaseController
         $stmt = $db->prepare('INSERT INTO users (role_id, username, name, email, password, is_active, created_at, updated_at) VALUES (:role_id, :username, :name, :email, :password, :is_active, :created_at, :updated_at)');
         $stmt->execute($payload);
 
+        $userId = (int) $db->lastInsertId();
+        if ($userId > 0) {
+            $membershipRepository = new \App\Repositories\MembershipRepository($db);
+            $freePlan = $membershipRepository->findPlanBySlug('free');
+            if ($freePlan) {
+                $membershipRepository->assignPlan($userId, (int) $freePlan['id']);
+            }
+        }
+
         $this->app->session()->flash('success', 'Registration successful! Please sign in.');
         return $this->redirect('/login');
+    }
+
+    public function membershipPlans(Request $request)
+    {
+        $connection = $this->app->database()->connection();
+        $membershipRepository = new \App\Repositories\MembershipRepository($connection);
+        $plans = $membershipRepository->allPlans();
+
+        $currentUser = $this->currentUser();
+        $activeMembership = null;
+        if (is_array($currentUser) && isset($currentUser['id'])) {
+            $activeMembership = $membershipRepository->getActiveMembership((int) $currentUser['id']);
+        }
+
+        return $this->view('site/membership', array(
+            'siteName' => (string) $this->app->config()->get('app.name', 'Developer Ruhban'),
+            'plans' => $plans,
+            'activeMembership' => $activeMembership,
+            'currentUser' => $currentUser,
+        ), array(
+            'meta' => array(
+                'title' => 'Membership Plans - Ruhban\'s Lab',
+                'description' => 'Unlock premium developer tutorials, templates, downloads, and resources in Ruhban\'s Lab.',
+                'canonical' => url('/membership'),
+                'robots' => 'index, follow',
+            ),
+            'breadcrumbs' => $this->breadcrumbs(array(
+                array('label' => 'Home', 'url' => url('/')),
+                array('label' => 'Membership', 'url' => url('/membership')),
+            )),
+        ));
+    }
+
+    public function downloadProduct(Request $request, $id)
+    {
+        $id = (int) $id;
+        $post = $this->postRepository->findPublishedById($id);
+
+        if (!$post) {
+            throw new HttpException('Product not found.', 404);
+        }
+
+        $metaFields = $this->metaRepository->getByPostId($id);
+
+        if (!has_product_feature_access($post, 'download', $metaFields)) {
+            $this->app->session()->flash('error', 'You do not have permission to download this product. Please upgrade your plan.');
+            return $this->redirect('/membership');
+        }
+
+        $downloadUrl = trim((string) ($metaFields['download_url'] ?? ''));
+        if ($downloadUrl === '') {
+            $this->app->session()->flash('error', 'Download link not available.');
+            return $this->redirect('/lab/' . $post['slug']);
+        }
+
+        $currentCount = (int) ($metaFields['download_count'] ?? 0);
+        $metaFields['download_count'] = $currentCount + 1;
+        $this->metaRepository->syncMeta($id, $metaFields);
+
+        return $this->redirect($downloadUrl);
+    }
+
+    public function publicPricing(Request $request)
+    {
+        $db = $this->app->database()->connection();
+        $membershipRepository = new \App\Repositories\MembershipRepository($db);
+        $plans = $membershipRepository->allPlans();
+        
+        $currentUser = $this->currentUser();
+        $activeMembership = $currentUser ? $membershipRepository->getActiveMembership((int) $currentUser['id']) : null;
+
+        return $this->view('site/pricing', array(
+            'plans' => $plans,
+            'activeMembership' => $activeMembership,
+        ), array(
+            'meta' => array(
+                'title' => 'Pricing Plans — Ruhban\'s Lab',
+                'description' => 'Compare our Free, Pro, and Lifetime plans and unlock premium codebase resources.',
+                'robots' => 'index, follow',
+            ),
+        ));
+    }
+
+    public function simulatedPurchase(Request $request)
+    {
+        $productId = (int) $request->input('product_id', 0);
+        $post = $this->postRepository->findPublishedById($productId);
+
+        if (!$post) {
+            throw new HttpException('Product not found.', 404);
+        }
+
+        $session = $this->app->session();
+        $purchasedIds = $session->get('purchased_product_ids', array());
+        if (!is_array($purchasedIds)) {
+            $purchasedIds = array();
+        }
+
+        if (!in_array($productId, $purchasedIds, true)) {
+            $purchasedIds[] = $productId;
+            $session->set('purchased_product_ids', $purchasedIds);
+        }
+
+        // Record a download/purchase event in user activity timeline
+        $currentUser = $this->currentUser();
+        if ($currentUser) {
+            $db = $this->app->database()->connection();
+            $stmt = $db->prepare('INSERT INTO activity_events (user_id, post_id, event_type, created_at) VALUES (:uid, :pid, "download", :created)');
+            $stmt->execute(array(
+                'uid' => (int) $currentUser['id'],
+                'pid' => $productId,
+                'created' => date('Y-m-d H:i:s'),
+            ));
+        }
+
+        $session->flash('success', 'Purchase simulated successfully! Premium product unlocked.');
+        return $this->redirect('/lab/' . $post['slug']);
     }
 }

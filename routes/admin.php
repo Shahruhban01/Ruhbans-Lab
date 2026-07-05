@@ -13,7 +13,7 @@ use App\Core\Router;
 return static function (Router $router): void {
     $router->group([
         'prefix' => '/admin',
-        'middleware' => ['auth', 'csrf', 'admin_access'],
+        'middleware' => ['auth', 'csrf', 'admin_access', 'membership'],
     ], static function (Router $router): void {
         $router->get('/', [DashboardController::class, 'index']);
         $router->get('/activity-logs', [DashboardController::class, 'activityLogs']);
@@ -27,6 +27,15 @@ return static function (Router $router): void {
         $router->get('/redirects', [RedirectController::class, 'index']);
         $router->post('/redirects', [RedirectController::class, 'store']);
         $router->post('/redirects/{id}/delete', [RedirectController::class, 'delete']);
+
+        $router->get('/memberships', [\App\Controllers\Admin\MembershipController::class, 'index']);
+        $router->post('/memberships/assign', [\App\Controllers\Admin\MembershipController::class, 'assign']);
+        $router->post('/memberships/cancel', [\App\Controllers\Admin\MembershipController::class, 'cancel']);
+        $router->get('/memberships/revenue', [\App\Controllers\Admin\MembershipController::class, 'revenue']);
+        $router->get('/memberships/coupons', [\App\Controllers\Admin\MembershipController::class, 'coupons']);
+        $router->post('/memberships/coupons/create', [\App\Controllers\Admin\MembershipController::class, 'createCoupon']);
+        $router->post('/memberships/coupons/{id}/delete', [\App\Controllers\Admin\MembershipController::class, 'deleteCoupon']);
+        $router->get('/memberships/licenses', [\App\Controllers\Admin\MembershipController::class, 'licenses']);
 
         $router->group([
             'prefix' => '/content',

@@ -17,6 +17,8 @@ return [
         'csrf' => \App\Middleware\CsrfMiddleware::class,
         'admin_access' => \App\Middleware\AdminAccessMiddleware::class,
         'admin_only' => \App\Middleware\AdminOnlyMiddleware::class,
+        'membership' => \App\Middleware\MembershipMiddleware::class,
+        'member_only' => \App\Middleware\MemberOnlyMiddleware::class,
     ],
     'routes' => [
         __DIR__ . '/../routes/web.php',

@@ -380,13 +380,6 @@ final class ContentController extends BaseAdminController
         return $this->redirect($redirectUrl);
     }
 
-    private function currentUserId(): int
-    {
-        $currentUser = $this->app->session()->get($this->app->config()->get('auth.session_key', 'auth_user'));
-
-        return is_array($currentUser) && isset($currentUser['id']) ? (int) $currentUser['id'] : 0;
-    }
-
     private function extractPostInput(Request $request): array
     {
         return array(

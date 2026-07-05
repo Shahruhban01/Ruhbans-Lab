@@ -191,7 +191,7 @@ final class SeoController extends BaseController
         return $this->xmlResponse($xml, 'application/rss+xml; charset=utf-8');
     }
 
-    public function redirect(Request $request, string $slug)
+    public function performRedirect(Request $request, string $slug)
     {
         $path = '/' . trim($slug, '/');
         $redirect = $this->redirectRepository->findBySourcePath($path);

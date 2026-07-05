@@ -38,7 +38,39 @@ $publishedAt = !empty($post['published_at']) ? $post['published_at'] : $post['cr
     <section class="article-layout">
         <div class="article-body card-surface prose-content">
             <div class="article-content">
-                <?php echo $contentHtml; ?>
+                <?php if (has_post_access($post)) : ?>
+                    <?php echo $contentHtml; ?>
+                <?php else : ?>
+                    <div class="premium-teaser-container">
+                        <div class="premium-preview-fade">
+                            <?php 
+                            $paragraphs = explode('</p>', $contentHtml);
+                            echo $paragraphs[0] . '</p>';
+                            if (isset($paragraphs[1])) {
+                                echo $paragraphs[1] . '</p>';
+                            }
+                            ?>
+                        </div>
+                        
+                        <div class="premium-lock-card text-center p-5 my-4 rounded border card-surface shadow-sm">
+                            <div class="premium-lock-icon mb-3">
+                                <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="text-primary"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                            </div>
+                            <h3 class="h4 fw-bold mb-3">Premium Content</h3>
+                            <p class="text-muted small max-width-500 mx-auto mb-4">
+                                This content is restricted to members with a <strong><?php echo e(ucfirst(str_replace('_', ' ', $post['visibility']))); ?></strong> membership or higher. Join Ruhban's Lab to unlock all tutorials, guides, templates, and priority developer support.
+                            </p>
+                            <div>
+                                <?php if (!$currentUser) : ?>
+                                    <a href="<?php echo e(url('/signup')); ?>" class="btn btn-primary px-4 py-2 me-2">Sign Up / Log In</a>
+                                    <a href="<?php echo e(url('/membership')); ?>" class="btn btn-outline-secondary px-4 py-2">View Plans & Pricing</a>
+                                <?php else : ?>
+                                    <a href="<?php echo e(url('/membership')); ?>" class="btn btn-primary px-4 py-2">Upgrade Membership</a>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
+                <?php endif; ?>
             </div>
             <?php if ($metaFields !== array()) : ?>
                 <section class="article-meta-fields">

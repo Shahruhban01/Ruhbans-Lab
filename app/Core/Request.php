@@ -10,6 +10,7 @@ final class Request
     private array $get;
     private array $post;
     private array $files;
+    private array $attributes = [];
 
     private function __construct(array $server, array $get, array $post, array $files)
     {
@@ -112,6 +113,16 @@ final class Request
         $accept = (string) $this->header('Accept', '');
 
         return strpos($accept, 'application/json') !== false || strpos($accept, 'application/vnd.api+json') !== false;
+    }
+
+    public function set(string $key, $value): void
+    {
+        $this->attributes[$key] = $value;
+    }
+
+    public function get(string $key, $default = null)
+    {
+        return $this->attributes[$key] ?? $default;
     }
 
     private function basePath(): string

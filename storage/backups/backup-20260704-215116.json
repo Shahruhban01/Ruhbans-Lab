@@ -1,0 +1,1061 @@
+{
+    "meta": {
+        "created_at": "2026-07-04 21:51:16",
+        "version": "phase9",
+        "app": "Ruhban's Lab"
+    },
+    "tables": {
+        "roles": [
+            {
+                "id": 1,
+                "name": "Admin",
+                "slug": "admin",
+                "created_at": "2026-07-04 20:18:27",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 2,
+                "name": "Editor",
+                "slug": "editor",
+                "created_at": "2026-07-04 20:18:27",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 3,
+                "name": "Author",
+                "slug": "author",
+                "created_at": "2026-07-04 20:18:27",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 4,
+                "name": "Visitor",
+                "slug": "visitor",
+                "created_at": "2026-07-04 20:18:27",
+                "updated_at": null,
+                "deleted_at": null
+            }
+        ],
+        "users": [
+            {
+                "id": 1,
+                "role_id": 1,
+                "username": "editorial-author",
+                "name": "Editorial Author",
+                "email": "shahruhban01@gmail.com",
+                "password": "$2y$10$QY2r.JDUV5RNhBMzMf9UsOT0/nXwSfueAYrEdUPhiHkmmToA05Z1y",
+                "avatar": null,
+                "bio": "Editorial contributor for the public knowledge base.",
+                "website": "https://developer-ruhban.example",
+                "github": null,
+                "linkedin": null,
+                "twitter": null,
+                "is_active": 1,
+                "email_verified_at": null,
+                "last_login": "2026-07-04 21:22:18",
+                "created_at": "2026-07-04 21:24:13",
+                "updated_at": "2026-07-04 21:22:18",
+                "deleted_at": null
+            }
+        ],
+        "content_types": [
+            {
+                "id": 1,
+                "name": "Article",
+                "slug": "article",
+                "description": "Long-form editorial content.",
+                "icon": "article",
+                "created_at": "2026-07-04 21:24:13",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 2,
+                "name": "News",
+                "slug": "news",
+                "description": "Time-sensitive updates and announcements.",
+                "icon": "newspaper",
+                "created_at": "2026-07-04 21:24:13",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 3,
+                "name": "Tutorial",
+                "slug": "tutorial",
+                "description": "Step-by-step educational content.",
+                "icon": "graduation-cap",
+                "created_at": "2026-07-04 21:24:13",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 4,
+                "name": "Guide",
+                "slug": "guide",
+                "description": "Evergreen reference and how-to content.",
+                "icon": "book",
+                "created_at": "2026-07-04 21:24:13",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 9,
+                "name": "Projects",
+                "slug": "projects",
+                "description": "Showcase software projects.",
+                "icon": "folder-open",
+                "created_at": "2026-07-04 21:31:34",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 10,
+                "name": "Blogs",
+                "slug": "blogs",
+                "description": "Long-form technical articles.",
+                "icon": "newspaper",
+                "created_at": "2026-07-04 21:31:34",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 11,
+                "name": "Problem Solution",
+                "slug": "problem-solution",
+                "description": "Document bugs and their solutions.",
+                "icon": "triangle-exclamation",
+                "created_at": "2026-07-04 21:31:34",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 12,
+                "name": "AI Prompts",
+                "slug": "ai-prompts",
+                "description": "Reusable prompts for AI workflows.",
+                "icon": "robot",
+                "created_at": "2026-07-04 21:31:34",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 13,
+                "name": "Code Snippets",
+                "slug": "code-snippets",
+                "description": "Reusable code snippets and examples.",
+                "icon": "code",
+                "created_at": "2026-07-04 21:31:34",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 14,
+                "name": "Tools",
+                "slug": "tools",
+                "description": "Recommend online tools.",
+                "icon": "screwdriver-wrench",
+                "created_at": "2026-07-04 21:31:34",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 15,
+                "name": "Websites",
+                "slug": "websites",
+                "description": "Useful websites and references.",
+                "icon": "globe",
+                "created_at": "2026-07-04 21:31:34",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 16,
+                "name": "Applications",
+                "slug": "applications",
+                "description": "Desktop or mobile applications.",
+                "icon": "mobile-screen-button",
+                "created_at": "2026-07-04 21:31:34",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 17,
+                "name": "Reviews",
+                "slug": "reviews",
+                "description": "Reviews of software, hardware, books, hosting, or courses.",
+                "icon": "star",
+                "created_at": "2026-07-04 21:31:34",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 18,
+                "name": "Resources",
+                "slug": "resources",
+                "description": "Useful learning resources.",
+                "icon": "book-open",
+                "created_at": "2026-07-04 21:31:34",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 19,
+                "name": "Videos",
+                "slug": "videos",
+                "description": "Educational videos and embeds.",
+                "icon": "video",
+                "created_at": "2026-07-04 21:31:34",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 20,
+                "name": "Downloads",
+                "slug": "downloads",
+                "description": "Downloadable files and assets.",
+                "icon": "download",
+                "created_at": "2026-07-04 21:31:34",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 21,
+                "name": "Developer Notes",
+                "slug": "developer-notes",
+                "description": "Personal technical notes.",
+                "icon": "note-sticky",
+                "created_at": "2026-07-04 21:31:34",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 22,
+                "name": "Thoughts",
+                "slug": "thoughts",
+                "description": "Engineering opinions and ideas.",
+                "icon": "comment-dots",
+                "created_at": "2026-07-04 21:31:34",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 23,
+                "name": "Experiments",
+                "slug": "experiments",
+                "description": "Document experiments and outcomes.",
+                "icon": "flask",
+                "created_at": "2026-07-04 21:31:34",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 24,
+                "name": "Roadmaps",
+                "slug": "roadmaps",
+                "description": "Learning paths and milestone plans.",
+                "icon": "route",
+                "created_at": "2026-07-04 21:31:34",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 25,
+                "name": "Cheat Sheets",
+                "slug": "cheat-sheets",
+                "description": "Quick reference pages.",
+                "icon": "list-check",
+                "created_at": "2026-07-04 21:31:34",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 26,
+                "name": "Recommendations",
+                "slug": "recommendations",
+                "description": "Recommend products, services, or software.",
+                "icon": "thumbs-up",
+                "created_at": "2026-07-04 21:31:34",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 27,
+                "name": "Collections",
+                "slug": "collections",
+                "description": "Group multiple posts together.",
+                "icon": "layer-group",
+                "created_at": "2026-07-04 21:31:34",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 74,
+                "name": "Product",
+                "slug": "product",
+                "description": "Product showcases, applications, extension template downloads.",
+                "icon": "box-open",
+                "created_at": "2026-07-05 01:27:02",
+                "updated_at": null,
+                "deleted_at": null
+            }
+        ],
+        "categories": [
+            {
+                "id": 1,
+                "parent_id": null,
+                "name": "Programming",
+                "slug": "programming",
+                "description": "Programming tutorials, snippets, and engineering notes.",
+                "icon": "code",
+                "featured_image": null,
+                "created_at": "2026-07-04 21:24:13",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 2,
+                "parent_id": null,
+                "name": "Design",
+                "slug": "design",
+                "description": "Visual design, UI, and product craft content.",
+                "icon": "palette",
+                "featured_image": null,
+                "created_at": "2026-07-04 21:24:13",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 3,
+                "parent_id": null,
+                "name": "Business",
+                "slug": "business",
+                "description": "Strategy, operations, and business insights.",
+                "icon": "briefcase",
+                "featured_image": null,
+                "created_at": "2026-07-04 21:24:13",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 4,
+                "parent_id": null,
+                "name": "Technology",
+                "slug": "technology",
+                "description": "Technology news, analysis, and reviews.",
+                "icon": "cpu",
+                "featured_image": null,
+                "created_at": "2026-07-04 21:24:13",
+                "updated_at": null,
+                "deleted_at": null
+            }
+        ],
+        "tags": [
+            {
+                "id": 1,
+                "name": "PHP",
+                "slug": "php",
+                "created_at": "2026-07-04 21:24:13",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 2,
+                "name": "MySQL",
+                "slug": "mysql",
+                "created_at": "2026-07-04 21:24:13",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 3,
+                "name": "Architecture",
+                "slug": "architecture",
+                "created_at": "2026-07-04 21:24:13",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 4,
+                "name": "SEO",
+                "slug": "seo",
+                "created_at": "2026-07-04 21:24:13",
+                "updated_at": null,
+                "deleted_at": null
+            },
+            {
+                "id": 5,
+                "name": "Security",
+                "slug": "security",
+                "created_at": "2026-07-04 21:24:13",
+                "updated_at": null,
+                "deleted_at": null
+            }
+        ],
+        "posts": [
+            {
+                "id": 1,
+                "content_type_id": 4,
+                "author_id": 1,
+                "title": "Getting Started with Developer Ruhban",
+                "slug": "getting-started-with-developer-ruhban",
+                "excerpt": "A practical introduction to the platform structure, content flow, and SEO-first publishing model.",
+                "content": "<p>Developer Ruhban is built to keep content fast to publish and easy to maintain.</p><h2>What this platform is</h2><p>It combines a custom MVC backend, a reusable content model, and a clean public frontend.</p><h2>What you can publish</h2><p>Tutorials, guides, notes, and reference material can all live in the same system.</p>",
+                "featured_image": null,
+                "status": "published",
+                "visibility": "public",
+                "reading_time": 6,
+                "published_at": "2026-07-04 08:00:00",
+                "featured_flag": 1,
+                "created_at": "2026-07-04 08:00:00",
+                "updated_at": "2026-07-04 08:00:00",
+                "deleted_at": null
+            },
+            {
+                "id": 2,
+                "content_type_id": 3,
+                "author_id": 1,
+                "title": "Building SEO-Friendly Public Content Pages",
+                "slug": "building-seo-friendly-public-content-pages",
+                "excerpt": "A focused walkthrough of metadata, breadcrumbs, internal links, and structured public pages.",
+                "content": "<p>Search engines reward clarity, structure, and internal linking.</p><h2>Core rules</h2><ul><li>Use descriptive titles.</li><li>Keep URLs short and readable.</li><li>Add a single H1 and consistent headings.</li></ul><h2>Page structure</h2><p>Every page should have a clear purpose and support one main topic.</p>",
+                "featured_image": null,
+                "status": "published",
+                "visibility": "public",
+                "reading_time": 7,
+                "published_at": "2026-07-04 09:00:00",
+                "featured_flag": 1,
+                "created_at": "2026-07-04 09:00:00",
+                "updated_at": "2026-07-04 09:00:00",
+                "deleted_at": null
+            },
+            {
+                "id": 3,
+                "content_type_id": 1,
+                "author_id": 1,
+                "title": "Universal Content Workflow and Revisions",
+                "slug": "universal-content-workflow-and-revisions",
+                "excerpt": "A practical look at drafts, publishing, revision history, and metadata management.",
+                "content": "<p>The universal content workflow starts with a draft and ends with a traceable revision history.</p><h2>Workflow</h2><p>Edit, preview, publish, schedule, and restore revisions from one place.</p><h2>Why revisions matter</h2><p>Version history keeps publishing safe when content changes over time.</p>",
+                "featured_image": null,
+                "status": "published",
+                "visibility": "public",
+                "reading_time": 5,
+                "published_at": "2026-07-04 10:00:00",
+                "featured_flag": 0,
+                "created_at": "2026-07-04 10:00:00",
+                "updated_at": "2026-07-04 10:00:00",
+                "deleted_at": null
+            },
+            {
+                "id": 13,
+                "content_type_id": 74,
+                "author_id": 1,
+                "title": "Antigravity IDE Plugin",
+                "slug": "antigravity-ide-plugin",
+                "excerpt": "A premium developer extension for advanced agentic code generation and testing.",
+                "content": "<p>This is a demo product showcase inside Ruhban's Lab.</p><h3>How it works</h3><p>It connects directly with agentic workflows to analyze codebases and apply micro-optimizations.</p>",
+                "featured_image": null,
+                "status": "published",
+                "visibility": "public",
+                "reading_time": 3,
+                "published_at": "2026-07-05 01:27:58",
+                "featured_flag": 0,
+                "created_at": "2026-07-05 01:27:58",
+                "updated_at": null,
+                "deleted_at": null
+            }
+        ],
+        "post_categories": [
+            {
+                "post_id": 1,
+                "category_id": 1,
+                "created_at": "2026-07-04 21:24:13"
+            },
+            {
+                "post_id": 2,
+                "category_id": 4,
+                "created_at": "2026-07-04 21:24:13"
+            },
+            {
+                "post_id": 3,
+                "category_id": 3,
+                "created_at": "2026-07-04 16:12:21"
+            }
+        ],
+        "post_tags": [
+            {
+                "post_id": 1,
+                "tag_id": 1,
+                "created_at": "2026-07-04 21:24:13"
+            },
+            {
+                "post_id": 1,
+                "tag_id": 3,
+                "created_at": "2026-07-04 21:24:13"
+            },
+            {
+                "post_id": 2,
+                "tag_id": 4,
+                "created_at": "2026-07-04 21:24:13"
+            },
+            {
+                "post_id": 3,
+                "tag_id": 5,
+                "created_at": "2026-07-04 16:12:21"
+            }
+        ],
+        "post_meta": [
+            {
+                "id": 1,
+                "post_id": 13,
+                "meta_key": "product_status",
+                "meta_value": "Live",
+                "created_at": "2026-07-05 01:27:58",
+                "updated_at": null
+            },
+            {
+                "id": 2,
+                "post_id": 13,
+                "meta_key": "product_type",
+                "meta_value": "Browser Extension",
+                "created_at": "2026-07-05 01:27:58",
+                "updated_at": null
+            },
+            {
+                "id": 3,
+                "post_id": 13,
+                "meta_key": "product_version",
+                "meta_value": "1.2.0",
+                "created_at": "2026-07-05 01:27:58",
+                "updated_at": null
+            },
+            {
+                "id": 4,
+                "post_id": 13,
+                "meta_key": "tech_stack",
+                "meta_value": "TypeScript, React, WebExtensions API",
+                "created_at": "2026-07-05 01:27:58",
+                "updated_at": null
+            },
+            {
+                "id": 5,
+                "post_id": 13,
+                "meta_key": "product_license",
+                "meta_value": "MIT",
+                "created_at": "2026-07-05 01:27:58",
+                "updated_at": null
+            },
+            {
+                "id": 6,
+                "post_id": 13,
+                "meta_key": "github_repository",
+                "meta_value": "https://github.com/example/antigravity-plugin",
+                "created_at": "2026-07-05 01:27:58",
+                "updated_at": null
+            },
+            {
+                "id": 7,
+                "post_id": 13,
+                "meta_key": "live_demo",
+                "meta_value": "https://example.com/demo",
+                "created_at": "2026-07-05 01:27:58",
+                "updated_at": null
+            },
+            {
+                "id": 8,
+                "post_id": 13,
+                "meta_key": "product_features",
+                "meta_value": "Multi-agent coding environment\nAutomatic visual preview validation\nGit integration with diff analysis",
+                "created_at": "2026-07-05 01:27:58",
+                "updated_at": null
+            },
+            {
+                "id": 9,
+                "post_id": 13,
+                "meta_key": "installation_guide",
+                "meta_value": "npm install -g antigravity-ide-plugin",
+                "created_at": "2026-07-05 01:27:58",
+                "updated_at": null
+            },
+            {
+                "id": 10,
+                "post_id": 13,
+                "meta_key": "requirements",
+                "meta_value": "Node.js >= 18",
+                "created_at": "2026-07-05 01:27:58",
+                "updated_at": null
+            }
+        ],
+        "post_seo": [],
+        "post_revisions": [
+            {
+                "id": 1,
+                "post_id": 3,
+                "user_id": 1,
+                "label": "Updated",
+                "snapshot_json": "{\"post\":{\"content_type_id\":1,\"author_id\":1,\"title\":\"Universal Content Workflow and Revisions\",\"slug\":\"universal-content-workflow-and-revisions\",\"excerpt\":\"A practical look at drafts, publishing, revision history, and metadata management.\",\"content\":\"<p>The universal content workflow starts with a draft and ends with a traceable revision history.<\\/p><h2>Workflow<\\/h2><p>Edit, preview, publish, schedule, and restore revisions from one place.<\\/p><h2>Why revisions matter<\\/h2><p>Version history keeps publishing safe when content changes over time.<\\/p>\",\"featured_image\":\"\",\"status\":\"published\",\"visibility\":\"public\",\"reading_time\":5,\"published_at\":\"2026-07-04 10:00:00\",\"featured_flag\":0,\"updated_at\":\"2026-07-04 16:12:21\",\"id\":\"3\"},\"categories\":[3],\"tags\":[5],\"meta\":{\"key\":\"\",\"value\":\"\"},\"seo\":{\"meta_title\":\"\",\"meta_description\":\"\",\"canonical_url\":\"\",\"robots\":\"index, follow\",\"schema_type\":\"Article\",\"og_title\":\"\",\"og_description\":\"\",\"og_image\":\"\",\"twitter_card\":\"summary_large_image\"}}",
+                "created_at": "2026-07-04 16:12:21"
+            }
+        ],
+        "media": [
+            {
+                "id": 2,
+                "uploader_id": 1,
+                "filename": "media_6a4930c7303693.76259180.png",
+                "original_name": "whatsapp.png",
+                "path": "uploads/media/media_6a4930c7303693.76259180.png",
+                "mime_type": "image/png",
+                "extension": "png",
+                "file_size": 113268,
+                "width": 360,
+                "height": 360,
+                "alt_text": "test image",
+                "created_at": "2026-07-04 16:11:51",
+                "updated_at": null,
+                "deleted_at": null
+            }
+        ],
+        "search_queries": [
+            {
+                "id": 1,
+                "search_term": "php routing",
+                "normalized_term": "php routing",
+                "filters_json": null,
+                "result_count": 2,
+                "ip_address": "127.0.0.1",
+                "user_agent": "Seed",
+                "referrer": null,
+                "created_at": "2026-07-04 12:00:00"
+            },
+            {
+                "id": 2,
+                "search_term": "seo content",
+                "normalized_term": "seo content",
+                "filters_json": null,
+                "result_count": 2,
+                "ip_address": "127.0.0.1",
+                "user_agent": "Seed",
+                "referrer": null,
+                "created_at": "2026-07-04 12:05:00"
+            },
+            {
+                "id": 3,
+                "search_term": "content workflow",
+                "normalized_term": "content workflow",
+                "filters_json": null,
+                "result_count": 1,
+                "ip_address": "127.0.0.1",
+                "user_agent": "Seed",
+                "referrer": null,
+                "created_at": "2026-07-04 12:10:00"
+            },
+            {
+                "id": 4,
+                "search_term": "developer notes",
+                "normalized_term": "developer notes",
+                "filters_json": null,
+                "result_count": 1,
+                "ip_address": "127.0.0.1",
+                "user_agent": "Seed",
+                "referrer": null,
+                "created_at": "2026-07-04 12:15:00"
+            },
+            {
+                "id": 5,
+                "search_term": "universal",
+                "normalized_term": "universal",
+                "filters_json": "{\"author_username\":\"\",\"category_slug\":\"\",\"featured\":0,\"month\":0,\"search\":\"universal\",\"sort\":\"relevance\",\"tag_slug\":\"\",\"type_slug\":\"\",\"year\":0}",
+                "result_count": 1,
+                "ip_address": "::1",
+                "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
+                "referrer": "http://localhost/projectsPortfolio/",
+                "created_at": "2026-07-04 21:06:30"
+            },
+            {
+                "id": 6,
+                "search_term": "universal",
+                "normalized_term": "universal",
+                "filters_json": "{\"author_username\":\"\",\"category_slug\":\"\",\"featured\":0,\"month\":0,\"search\":\"universal\",\"sort\":\"relevance\",\"tag_slug\":\"\",\"type_slug\":\"\",\"year\":0}",
+                "result_count": 1,
+                "ip_address": "::1",
+                "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
+                "referrer": "http://localhost/projectsPortfolio/",
+                "created_at": "2026-07-04 21:06:51"
+            },
+            {
+                "id": 7,
+                "search_term": "universal",
+                "normalized_term": "universal",
+                "filters_json": "{\"author_username\":\"\",\"category_slug\":\"\",\"featured\":0,\"month\":0,\"search\":\"universal\",\"sort\":\"relevance\",\"tag_slug\":\"\",\"type_slug\":\"\",\"year\":0}",
+                "result_count": 1,
+                "ip_address": "::1",
+                "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
+                "referrer": "http://localhost/projectsPortfolio/",
+                "created_at": "2026-07-04 21:06:55"
+            }
+        ],
+        "content_metrics": [
+            {
+                "id": 1,
+                "post_id": 3,
+                "view_count": 3,
+                "search_count": 3,
+                "last_viewed_at": "2026-07-04 21:06:49",
+                "last_searched_at": "2026-07-04 21:06:55",
+                "created_at": "2026-07-04 16:31:13",
+                "updated_at": "2026-07-04 21:06:55"
+            },
+            {
+                "id": 3,
+                "post_id": 1,
+                "view_count": 37,
+                "search_count": 14,
+                "last_viewed_at": "2026-07-04 19:47:39",
+                "last_searched_at": "2026-07-04 12:15:00",
+                "created_at": "2026-07-04 12:00:00",
+                "updated_at": "2026-07-04 19:47:39"
+            },
+            {
+                "id": 4,
+                "post_id": 2,
+                "view_count": 35,
+                "search_count": 19,
+                "last_viewed_at": "2026-07-04 21:35:15",
+                "last_searched_at": "2026-07-04 12:20:00",
+                "created_at": "2026-07-04 12:10:00",
+                "updated_at": "2026-07-04 21:35:15"
+            },
+            {
+                "id": 20,
+                "post_id": 13,
+                "view_count": 5,
+                "search_count": 0,
+                "last_viewed_at": "2026-07-04 21:46:48",
+                "last_searched_at": null,
+                "created_at": "2026-07-04 20:03:46",
+                "updated_at": "2026-07-04 21:46:48"
+            }
+        ],
+        "comments": [
+            {
+                "id": 1,
+                "post_id": 1,
+                "parent_id": null,
+                "user_id": 1,
+                "guest_name": "",
+                "guest_email": "",
+                "body": "yes",
+                "status": "published",
+                "actor_key": "user:1",
+                "created_at": "2026-07-04 19:39:42",
+                "updated_at": "2026-07-04 19:39:42",
+                "deleted_at": null
+            }
+        ],
+        "content_interactions": [
+            {
+                "id": 1,
+                "post_id": 1,
+                "user_id": 1,
+                "guest_token": null,
+                "actor_key": "user:1",
+                "interaction_type": "like",
+                "created_at": "2026-07-04 19:39:52",
+                "updated_at": "2026-07-04 19:39:52"
+            },
+            {
+                "id": 2,
+                "post_id": 2,
+                "user_id": 1,
+                "guest_token": null,
+                "actor_key": "user:1",
+                "interaction_type": "bookmark",
+                "created_at": "2026-07-04 21:35:03",
+                "updated_at": "2026-07-04 21:35:03"
+            }
+        ],
+        "reading_history": [
+            {
+                "id": 1,
+                "post_id": 1,
+                "user_id": 1,
+                "guest_token": null,
+                "actor_key": "user:1",
+                "view_count": 13,
+                "last_viewed_at": "2026-07-04 19:47:39",
+                "created_at": "2026-07-04 16:59:44",
+                "updated_at": "2026-07-04 19:47:39"
+            },
+            {
+                "id": 14,
+                "post_id": 2,
+                "user_id": 1,
+                "guest_token": null,
+                "actor_key": "user:1",
+                "view_count": 4,
+                "last_viewed_at": "2026-07-04 21:35:15",
+                "created_at": "2026-07-04 19:49:50",
+                "updated_at": "2026-07-04 21:35:15"
+            },
+            {
+                "id": 15,
+                "post_id": 13,
+                "user_id": 1,
+                "guest_token": null,
+                "actor_key": "user:1",
+                "view_count": 4,
+                "last_viewed_at": "2026-07-04 21:46:48",
+                "created_at": "2026-07-04 20:03:46",
+                "updated_at": "2026-07-04 21:46:48"
+            },
+            {
+                "id": 16,
+                "post_id": 3,
+                "user_id": null,
+                "guest_token": "1bd279a2101b87744fe369902b39f118",
+                "actor_key": "guest:1bd279a2101b87744fe369902b39f118",
+                "view_count": 1,
+                "last_viewed_at": "2026-07-04 21:06:49",
+                "created_at": "2026-07-04 21:06:49",
+                "updated_at": "2026-07-04 21:06:49"
+            },
+            {
+                "id": 17,
+                "post_id": 13,
+                "user_id": null,
+                "guest_token": "1bd279a2101b87744fe369902b39f118",
+                "actor_key": "guest:1bd279a2101b87744fe369902b39f118",
+                "view_count": 1,
+                "last_viewed_at": "2026-07-04 21:06:53",
+                "created_at": "2026-07-04 21:06:53",
+                "updated_at": "2026-07-04 21:06:53"
+            }
+        ],
+        "notifications": [
+            {
+                "id": 1,
+                "user_id": 1,
+                "type": "comment",
+                "title": "Editorial Author commented on your content.",
+                "body": "yes",
+                "url": "http://localhost/projectsPortfolio/content/getting-started-with-developer-ruhban",
+                "is_read": 0,
+                "read_at": null,
+                "created_at": "2026-07-04 19:39:42",
+                "updated_at": "2026-07-04 19:39:42"
+            }
+        ],
+        "activity_events": [
+            {
+                "id": 1,
+                "user_id": 1,
+                "post_id": 1,
+                "actor_key": "user:1",
+                "event_type": "comment",
+                "title": "Posted a comment.",
+                "body": "",
+                "url": "http://localhost/projectsPortfolio/content/getting-started-with-developer-ruhban",
+                "metadata_json": "{\"comment_id\":1,\"parent_id\":null}",
+                "created_at": "2026-07-04 19:39:42"
+            },
+            {
+                "id": 2,
+                "user_id": 1,
+                "post_id": 1,
+                "actor_key": "user:1",
+                "event_type": "like",
+                "title": "Liked content.",
+                "body": "",
+                "url": "http://localhost/projectsPortfolio/content/getting-started-with-developer-ruhban",
+                "metadata_json": "{\"interaction_type\":\"like\"}",
+                "created_at": "2026-07-04 19:39:52"
+            },
+            {
+                "id": 3,
+                "user_id": 1,
+                "post_id": 2,
+                "actor_key": "user:1",
+                "event_type": "bookmark",
+                "title": "Bookmarkd content.",
+                "body": "",
+                "url": "http://localhost/projectsPortfolio/content/building-seo-friendly-public-content-pages",
+                "metadata_json": "{\"interaction_type\":\"bookmark\"}",
+                "created_at": "2026-07-04 21:35:03"
+            }
+        ],
+        "newsletter_subscribers": [],
+        "contact_messages": [],
+        "redirects": [],
+        "settings": [
+            {
+                "id": 1,
+                "group_key": "seo",
+                "setting_key": "seo.meta_title",
+                "setting_value": "Ruhban's Lab",
+                "value_type": "string",
+                "is_public": 1,
+                "updated_by": 1,
+                "created_at": "2026-07-04 19:16:49",
+                "updated_at": "2026-07-04 19:16:49"
+            },
+            {
+                "id": 2,
+                "group_key": "seo",
+                "setting_key": "seo.meta_description",
+                "setting_value": "Content-first developer knowledge platform.",
+                "value_type": "string",
+                "is_public": 1,
+                "updated_by": 1,
+                "created_at": "2026-07-04 19:16:49",
+                "updated_at": "2026-07-04 19:16:49"
+            },
+            {
+                "id": 3,
+                "group_key": "seo",
+                "setting_key": "seo.default_robots",
+                "setting_value": "index, follow",
+                "value_type": "string",
+                "is_public": 1,
+                "updated_by": 1,
+                "created_at": "2026-07-04 19:16:49",
+                "updated_at": "2026-07-04 19:16:49"
+            },
+            {
+                "id": 4,
+                "group_key": "seo",
+                "setting_key": "seo.twitter_creator",
+                "setting_value": "@developerruhban",
+                "value_type": "string",
+                "is_public": 1,
+                "updated_by": 1,
+                "created_at": "2026-07-04 19:16:49",
+                "updated_at": "2026-07-04 19:16:49"
+            },
+            {
+                "id": 5,
+                "group_key": "seo",
+                "setting_key": "seo.og_image",
+                "setting_value": "http://localhost/projectsPortfolio/assets/images/seo-card.svg",
+                "value_type": "string",
+                "is_public": 1,
+                "updated_by": 1,
+                "created_at": "2026-07-04 19:16:49",
+                "updated_at": "2026-07-04 19:16:49"
+            },
+            {
+                "id": 6,
+                "group_key": "smtp",
+                "setting_key": "smtp.host",
+                "setting_value": "mail.developerruhban.space",
+                "value_type": "string",
+                "is_public": 0,
+                "updated_by": 1,
+                "created_at": "2026-07-04 19:18:56",
+                "updated_at": "2026-07-04 19:18:56"
+            },
+            {
+                "id": 7,
+                "group_key": "smtp",
+                "setting_key": "smtp.port",
+                "setting_value": "587",
+                "value_type": "string",
+                "is_public": 0,
+                "updated_by": 1,
+                "created_at": "2026-07-04 19:18:56",
+                "updated_at": "2026-07-04 19:18:56"
+            },
+            {
+                "id": 8,
+                "group_key": "smtp",
+                "setting_key": "smtp.username",
+                "setting_value": "admin@developerruhban.space",
+                "value_type": "string",
+                "is_public": 0,
+                "updated_by": 1,
+                "created_at": "2026-07-04 19:18:56",
+                "updated_at": "2026-07-04 19:18:56"
+            },
+            {
+                "id": 9,
+                "group_key": "smtp",
+                "setting_key": "smtp.password",
+                "setting_value": "rUHBAN@12",
+                "value_type": "string",
+                "is_public": 0,
+                "updated_by": 1,
+                "created_at": "2026-07-04 19:18:56",
+                "updated_at": "2026-07-04 19:18:56"
+            },
+            {
+                "id": 10,
+                "group_key": "smtp",
+                "setting_key": "smtp.encryption",
+                "setting_value": "tls",
+                "value_type": "string",
+                "is_public": 0,
+                "updated_by": 1,
+                "created_at": "2026-07-04 19:18:56",
+                "updated_at": "2026-07-04 19:18:56"
+            },
+            {
+                "id": 11,
+                "group_key": "smtp",
+                "setting_key": "smtp.from_email",
+                "setting_value": "no-reply@developerruhban.space",
+                "value_type": "string",
+                "is_public": 0,
+                "updated_by": 1,
+                "created_at": "2026-07-04 19:18:56",
+                "updated_at": "2026-07-04 19:18:56"
+            },
+            {
+                "id": 12,
+                "group_key": "smtp",
+                "setting_key": "smtp.from_name",
+                "setting_value": "Ruhban's Lab",
+                "value_type": "string",
+                "is_public": 0,
+                "updated_by": 1,
+                "created_at": "2026-07-04 19:18:56",
+                "updated_at": "2026-07-04 19:18:56"
+            },
+            {
+                "id": 13,
+                "group_key": "theme",
+                "setting_key": "theme.default",
+                "setting_value": "light",
+                "value_type": "string",
+                "is_public": 1,
+                "updated_by": null,
+                "created_at": "2026-07-05 02:50:48",
+                "updated_at": "2026-07-05 02:50:48"
+            },
+            {
+                "id": 14,
+                "group_key": "system",
+                "setting_key": "system.maintenance_mode",
+                "setting_value": "0",
+                "value_type": "bool",
+                "is_public": 0,
+                "updated_by": 1,
+                "created_at": "2026-07-04 21:32:13",
+                "updated_at": "2026-07-04 21:32:26"
+            },
+            {
+                "id": 15,
+                "group_key": "system",
+                "setting_key": "system.cache_ttl_minutes",
+                "setting_value": "60",
+                "value_type": "int",
+                "is_public": 0,
+                "updated_by": 1,
+                "created_at": "2026-07-04 21:32:13",
+                "updated_at": "2026-07-04 21:32:26"
+            }
+        ]
+    }
+}

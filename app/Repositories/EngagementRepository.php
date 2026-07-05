@@ -350,6 +350,107 @@ final class EngagementRepository extends BaseRepository
         return array_map('intval', $statement->fetchAll(PDO::FETCH_COLUMN));
     }
 
+    public function likedByUser(int $userId, int $limit = 20): array
+    {
+        if (!$this->hasTable('content_interactions') || $userId <= 0) {
+            return array();
+        }
+
+        $limit = max(1, min(50, $limit));
+        $statement = $this->connection->prepare('
+            SELECT ci.*, p.title, p.slug, p.excerpt, ct.name AS content_type_name, ci.created_at AS liked_at
+            FROM content_interactions ci
+            LEFT JOIN posts p ON p.id = ci.post_id
+            LEFT JOIN content_types ct ON ct.id = p.content_type_id
+            WHERE ci.user_id = :user_id AND ci.interaction_type = "like" AND p.id IS NOT NULL
+            ORDER BY ci.created_at DESC
+            LIMIT :limit
+        ');
+        $statement->bindValue(':user_id', $userId, PDO::PARAM_INT);
+        $statement->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $statement->execute();
+
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function commentsByUser(int $userId, int $limit = 20): array
+    {
+        if (!$this->hasTable('comments') || $userId <= 0) {
+            return array();
+        }
+
+        $limit = max(1, min(50, $limit));
+        $statement = $this->connection->prepare('
+            SELECT c.*, p.title AS post_title, p.slug AS post_slug
+            FROM comments c
+            LEFT JOIN posts p ON p.id = c.post_id
+            WHERE c.user_id = :user_id AND c.deleted_at IS NULL
+            ORDER BY c.created_at DESC
+            LIMIT :limit
+        ');
+        $statement->bindValue(':user_id', $userId, PDO::PARAM_INT);
+        $statement->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $statement->execute();
+
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function activityByUser(int $userId, int $limit = 20): array
+    {
+        if (!$this->hasTable('activity_events') || $userId <= 0) {
+            return array();
+        }
+
+        $limit = max(1, min(50, $limit));
+        $statement = $this->connection->prepare('
+            SELECT ae.*, p.title AS post_title, p.slug AS post_slug
+            FROM activity_events ae
+            LEFT JOIN posts p ON p.id = ae.post_id
+            WHERE ae.user_id = :user_id
+            ORDER BY ae.created_at DESC
+            LIMIT :limit
+        ');
+        $statement->bindValue(':user_id', $userId, PDO::PARAM_INT);
+        $statement->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $statement->execute();
+
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function markAllNotificationsRead(int $userId): bool
+    {
+        if (!$this->hasTable('notifications') || $userId <= 0) {
+            return false;
+        }
+
+        $now = date('Y-m-d H:i:s');
+        $statement = $this->connection->prepare('UPDATE notifications SET is_read = 1, read_at = :read_at, updated_at = :updated_at WHERE user_id = :user_id AND is_read = 0');
+        return $statement->execute(array('read_at' => $now, 'updated_at' => $now, 'user_id' => $userId));
+    }
+
+    public function bookmarkedPostsForUser(array $identity, int $limit = 20): array
+    {
+        if (!$this->hasTable('content_interactions')) {
+            return array();
+        }
+
+        $limit = max(1, min(50, $limit));
+        $statement = $this->connection->prepare('
+            SELECT ci.created_at AS bookmarked_at, p.id, p.title, p.slug, p.excerpt, ct.name AS content_type_name
+            FROM content_interactions ci
+            LEFT JOIN posts p ON p.id = ci.post_id
+            LEFT JOIN content_types ct ON ct.id = p.content_type_id
+            WHERE ci.interaction_type = "bookmark" AND ci.actor_key = :actor_key AND p.id IS NOT NULL
+            ORDER BY ci.created_at DESC
+            LIMIT :limit
+        ');
+        $statement->bindValue(':actor_key', $this->actorKey($identity));
+        $statement->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $statement->execute();
+
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     private function actorKey(array $identity): string
     {
         return isset($identity['actor_key']) ? (string) $identity['actor_key'] : 'guest:' . bin2hex(random_bytes(8));

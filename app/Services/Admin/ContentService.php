@@ -339,7 +339,7 @@ final class ContentService extends BaseService
     private function normalizeVisibility($visibility): string
     {
         $visibility = strtolower(trim((string) $visibility));
-        $allowed = array('public', 'private', 'unlisted');
+        $allowed = array('public', 'members_only', 'pro', 'lifetime', 'private', 'hidden', 'unlisted');
 
         return in_array($visibility, $allowed, true) ? $visibility : 'public';
     }

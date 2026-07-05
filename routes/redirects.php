@@ -6,5 +6,5 @@ use App\Controllers\SeoController;
 use App\Core\Router;
 
 return static function (Router $router): void {
-    $router->get('/{slug}', [SeoController::class, 'redirect']);
+    $router->get('/{slug}', [SeoController::class, 'performRedirect']);
 };
