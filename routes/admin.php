@@ -36,6 +36,11 @@ return static function (Router $router): void {
         $router->post('/memberships/coupons/create', [\App\Controllers\Admin\MembershipController::class, 'createCoupon']);
         $router->post('/memberships/coupons/{id}/delete', [\App\Controllers\Admin\MembershipController::class, 'deleteCoupon']);
         $router->get('/memberships/licenses', [\App\Controllers\Admin\MembershipController::class, 'licenses']);
+        $router->get('/memberships/gateways', [\App\Controllers\Admin\PaymentGatewayController::class, 'index']);
+        $router->post('/memberships/gateways/{gateway}/save', [\App\Controllers\Admin\PaymentGatewayController::class, 'save']);
+        $router->post('/memberships/gateways/{gateway}/test', [\App\Controllers\Admin\PaymentGatewayController::class, 'testConnection']);
+        $router->get('/memberships/analytics', [\App\Controllers\Admin\PaymentAnalyticsController::class, 'index']);
+        $router->get('/memberships/docs', [\App\Controllers\Admin\PaymentAnalyticsController::class, 'docs']);
 
         $router->group([
             'prefix' => '/content',

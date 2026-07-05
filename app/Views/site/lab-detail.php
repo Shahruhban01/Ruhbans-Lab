@@ -288,6 +288,7 @@ $getBadgeHtml = function(string $level) {
     </div>
 </div>
 
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
 function triggerSimulatedPurchase(productId, productName, amount) {
     <?php if (!$currentUser) : ?>
@@ -296,27 +297,67 @@ function triggerSimulatedPurchase(productId, productName, amount) {
         return;
     <?php endif; ?>
 
-    var price = (amount / 100).toFixed(2);
-    alert("Simulating Razorpay Payment Gateway...\n\nProduct: " + productName + "\nAmount: $" + price + "\n\nProcessing success feedback...");
+    fetch("<?php echo e(url('/razorpay/initialize')); ?>", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "X-Requested-With": "XMLHttpRequest"
+        },
+        body: "product_id=" + productId + "&_token=" + encodeURIComponent("<?php echo csrf_token(); ?>")
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            alert(data.error);
+            return;
+        }
 
-    var form = document.createElement('form');
-    form.method = 'POST';
-    form.action = "<?php echo e(url('/lab/purchase')); ?>";
+        var options = {
+            "key": data.key,
+            "amount": data.amount,
+            "currency": data.currency,
+            "name": data.name,
+            "description": "Purchase: " + productName,
+            "order_id": data.order_id,
+            "handler": function (response){
+                fetch("<?php echo e(url('/razorpay/verify')); ?>", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": "<?php echo csrf_token(); ?>"
+                    },
+                    body: JSON.stringify({
+                        razorpay_payment_id: response.razorpay_payment_id,
+                        razorpay_order_id: response.razorpay_order_id,
+                        razorpay_signature: response.razorpay_signature,
+                        transaction_id: data.notes.transaction_id,
+                        order_id: data.notes.order_id,
+                        product_id: productId
+                    })
+                })
+                .then(res => res.json())
+                .then(verifyData => {
+                    if (verifyData.success) {
+                        alert("Product purchased successfully! Unlocking download resources...");
+                        window.location.reload();
+                    } else {
+                        alert("Verification failed: " + verifyData.error);
+                    }
+                });
+            },
+            "prefill": data.prefill,
+            "theme": {
+                "color": "#6366f1"
+            }
+        };
 
-    var csrf = document.createElement('input');
-    csrf.type = 'hidden';
-    csrf.name = '_token';
-    csrf.value = "<?php echo csrf_token(); ?>";
-    form.appendChild(csrf);
-
-    var pid = document.createElement('input');
-    pid.type = 'hidden';
-    pid.name = 'product_id';
-    pid.value = productId;
-    form.appendChild(pid);
-
-    document.body.appendChild(form);
-    form.submit();
+        var rzp = new Razorpay(options);
+        rzp.open();
+    })
+    .catch(err => {
+        console.error(err);
+        alert("An error occurred during checkout setup.");
+    });
 }
 </script>
 

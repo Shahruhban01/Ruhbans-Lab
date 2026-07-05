@@ -58,6 +58,15 @@ $role = is_array($currentUser) && isset($currentUser['role_name']) ? $currentUse
                 <a class="admin-nav__link py-2" href="<?php echo e(url('/admin/memberships/licenses')); ?>">
                     Product Licenses
                 </a>
+                <a class="admin-nav__link py-2" href="<?php echo e(url('/admin/memberships/gateways')); ?>">
+                    Gateway Settings
+                </a>
+                <a class="admin-nav__link py-2" href="<?php echo e(url('/admin/memberships/analytics')); ?>">
+                    Payment Analytics
+                </a>
+                <a class="admin-nav__link py-2" href="<?php echo e(url('/admin/memberships/docs')); ?>">
+                    Gateway Docs
+                </a>
             </div>
         </div>
         <a class="admin-nav__link" href="<?php echo e(url('/admin/settings')); ?>">

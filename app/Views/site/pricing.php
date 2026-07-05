@@ -276,36 +276,74 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 });
+</script>
 
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
 function payWithRazorpay(planName, planId, amount) {
-    alert("Simulating Razorpay payment gateway integration for " + planName + " ($" + amount + ")...\n\nProcessing payment transaction...");
-    
-    // Create form to send to membership activation endpoint (which assigns the plan)
-    var form = document.createElement('form');
-    form.method = 'POST';
-    form.action = "<?php echo e(url('/account/pricing/checkout')); ?>";
-    
-    // Add CSRF token
-    var csrf = document.createElement('input');
-    csrf.type = 'hidden';
-    csrf.name = '_token';
-    csrf.value = "<?php echo csrf_token(); ?>";
-    form.appendChild(csrf);
+    // Call initialization route to fetch official transaction order metadata
+    fetch("<?php echo e(url('/razorpay/initialize')); ?>", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "X-Requested-With": "XMLHttpRequest"
+        },
+        body: "plan_id=" + planId + "&_token=" + encodeURIComponent("<?php echo csrf_token(); ?>")
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            alert(data.error);
+            return;
+        }
 
-    // Add user_id and plan_id values
-    var userField = document.createElement('input');
-    userField.type = 'hidden';
-    userField.name = 'user_id';
-    userField.value = "<?php echo e($currentUser ? $currentUser['id'] : ''); ?>";
-    form.appendChild(userField);
+        var options = {
+            "key": data.key,
+            "amount": data.amount,
+            "currency": data.currency,
+            "name": data.name,
+            "description": "Plan Upgrade: " + planName,
+            "order_id": data.order_id,
+            "handler": function (response){
+                // Post signature details to verify endpoint
+                fetch("<?php echo e(url('/razorpay/verify')); ?>", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": "<?php echo csrf_token(); ?>"
+                    },
+                    body: JSON.stringify({
+                        razorpay_payment_id: response.razorpay_payment_id,
+                        razorpay_order_id: response.razorpay_order_id,
+                        razorpay_signature: response.razorpay_signature,
+                        transaction_id: data.notes.transaction_id,
+                        order_id: data.notes.order_id,
+                        plan_id: planId
+                    })
+                })
+                .then(res => res.json())
+                .then(verifyData => {
+                    if (verifyData.success) {
+                        alert("Upgrade successful! Activating membership workspace...");
+                        window.location.href = "<?php echo e(url('/account/membership')); ?>";
+                    } else {
+                        alert("Verification failed: " + verifyData.error);
+                    }
+                });
+            },
+            "prefill": data.prefill,
+            "theme": {
+                "color": "#6366f1"
+            }
+        };
 
-    var planField = document.createElement('input');
-    planField.type = 'hidden';
-    planField.name = 'plan_id';
-    planField.value = planId;
-    form.appendChild(planField);
-
-    document.body.appendChild(form);
-    form.submit();
+        var rzp = new Razorpay(options);
+        rzp.open();
+    })
+    .catch(err => {
+        console.error(err);
+        alert("An error occurred during payment setup.");
+    });
 }
 </script>
+

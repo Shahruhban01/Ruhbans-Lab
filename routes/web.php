@@ -45,6 +45,10 @@ return static function (Router $router): void {
         $router->get('/lab/{id}/download', [SiteController::class, 'downloadProduct']);
         $router->post('/lab/purchase', [SiteController::class, 'simulatedPurchase'], array('csrf'));
         $router->post('/webhooks/{provider}', [\App\Controllers\WebhookController::class, 'handle']);
+        
+        // Razorpay Checkout Endpoints
+        $router->post('/razorpay/initialize', [\App\Controllers\RazorpayController::class, 'initialize'], array('csrf'));
+        $router->post('/razorpay/verify', [\App\Controllers\RazorpayController::class, 'verify'], array('csrf'));
 
         // Separated Member Portal Application
         $router->group([
