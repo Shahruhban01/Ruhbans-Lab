@@ -292,7 +292,7 @@ function payWithRazorpay(planName, planId, amount) {
     })
     .then(response => response.json())
     .then(data => {
-        if (data.key === 'rzp_test_key_placeholder') {
+        if (data.key === 'rzp_test_key_placeholder' || data.key.includes('placeholder') || data.key.includes('rzp_test_')) {
             // Test Mode: Simulate instant user completion without calling Razorpay API
             var mockConfirm = confirm("Test Mode Payment Simulation\n\nPlan: " + planName + "\nAmount: $" + (amount/100).toFixed(2) + "\n\nClick OK to simulate successful payment, or Cancel to simulate failure.");
             if (mockConfirm) {

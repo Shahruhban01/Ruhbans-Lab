@@ -79,9 +79,10 @@ final class PaymentAnalyticsController extends BaseAdminController
 
         // 4. Popular billing memberships
         $stmt = $db->prepare('
-            SELECT plan_name, COUNT(*) AS total 
-            FROM user_memberships 
-            GROUP BY plan_name 
+            SELECT mp.name AS plan_name, COUNT(*) AS total 
+            FROM user_memberships um
+            INNER JOIN membership_plans mp ON mp.id = um.plan_id
+            GROUP BY um.plan_id, mp.name
             ORDER BY total DESC
         ');
         $stmt->execute();

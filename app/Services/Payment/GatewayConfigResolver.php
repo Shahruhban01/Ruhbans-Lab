@@ -46,6 +46,18 @@ final class GatewayConfigResolver
             $config['webhook_secret'] = $this->encryptionService->decrypt($config['webhook_secret']) ?? '';
         }
 
+        // Apply Environment overrides for Razorpay keys if defined
+        if ($gateway === 'razorpay') {
+            $envKeyId = $_ENV['RAZORPAY_KEY_ID'] ?? getenv('RAZORPAY_KEY_ID');
+            $envKeySecret = $_ENV['RAZORPAY_KEY_SECRET'] ?? getenv('RAZORPAY_KEY_SECRET');
+            if ($envKeyId && $envKeyId !== '') {
+                $config['key_id'] = $envKeyId;
+            }
+            if ($envKeySecret && $envKeySecret !== '') {
+                $config['key_secret'] = $envKeySecret;
+            }
+        }
+
         return array(
             'is_active' => (int) $record['is_active'],
             'mode' => $config['mode'] ?? 'test',

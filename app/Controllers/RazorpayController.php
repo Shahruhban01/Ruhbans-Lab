@@ -86,10 +86,13 @@ final class RazorpayController extends BaseController
         $merchantName = $configData['config']['merchant_name'] ?? 'Developer Ruhban';
         $themeColor = $configData['config']['theme_color'] ?? '#6366f1';
 
+        $currency = $configData['config']['currency'] ?? 'INR';
+
         // Append public configuration settings
         $gatewayPayload = $initResult['gateway_payload'];
         $gatewayPayload['key'] = $keyId;
         $gatewayPayload['name'] = $merchantName;
+        $gatewayPayload['currency'] = $currency;
         $gatewayPayload['order_id'] = $gatewayPayload['gateway_order_id'];
         $gatewayPayload['prefill'] = array(
             'name' => $currentUser['name'] ?? '',

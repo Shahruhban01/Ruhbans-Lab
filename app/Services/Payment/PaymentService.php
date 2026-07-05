@@ -44,9 +44,11 @@ final class PaymentService
             $gateway->setConfig($configData);
         }
 
+        $currency = $configData['config']['currency'] ?? 'INR';
+
         $initParams = array(
             'amount' => $order['total_amount'],
-            'currency' => 'USD',
+            'currency' => $currency,
             'order_id' => $orderId,
         );
 
@@ -62,7 +64,7 @@ final class PaymentService
         $stmt->execute(array(
             'oid' => $orderId,
             'amount' => $order['total_amount'],
-            'currency' => 'USD',
+            'currency' => $currency,
             'gateway' => $provider,
             'gate_tx' => $response['gateway_order_id'] ?? $response['cf_order_id'] ?? $response['paypal_order_id'] ?? null,
             'status' => PaymentStatus::PENDING,

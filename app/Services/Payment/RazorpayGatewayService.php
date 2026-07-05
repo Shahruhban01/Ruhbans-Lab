@@ -26,7 +26,7 @@ final class RazorpayGatewayService implements PaymentGatewayInterface
         return array(
             'gateway_order_id' => 'rzp_order_' . bin2hex(random_bytes(8)),
             'amount' => $params['amount'] ?? 0,
-            'currency' => $params['currency'] ?? 'USD',
+            'currency' => 'INR',
             'status' => 'initialized',
         );
     }

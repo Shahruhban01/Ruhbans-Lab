@@ -21,3 +21,6 @@ Thumbs.db
 
 */.env.example
 logs/app-2026-07-04.log
+project.zip
+
+*.zip
