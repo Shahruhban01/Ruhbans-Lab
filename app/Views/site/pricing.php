@@ -292,8 +292,37 @@ function payWithRazorpay(planName, planId, amount) {
     })
     .then(response => response.json())
     .then(data => {
-        if (data.error) {
-            alert(data.error);
+        if (data.key === 'rzp_test_key_placeholder') {
+            // Test Mode: Simulate instant user completion without calling Razorpay API
+            var mockConfirm = confirm("Test Mode Payment Simulation\n\nPlan: " + planName + "\nAmount: $" + (amount/100).toFixed(2) + "\n\nClick OK to simulate successful payment, or Cancel to simulate failure.");
+            if (mockConfirm) {
+                fetch("<?php echo e(url('/razorpay/verify')); ?>", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": "<?php echo csrf_token(); ?>"
+                    },
+                    body: JSON.stringify({
+                        razorpay_payment_id: "pay_simulated_" + Math.random().toString(36).substr(2, 9),
+                        razorpay_order_id: data.order_id,
+                        razorpay_signature: "simulated_success_signature",
+                        transaction_id: data.notes.transaction_id,
+                        order_id: data.notes.order_id,
+                        plan_id: planId
+                    })
+                })
+                .then(res => res.json())
+                .then(verifyData => {
+                    if (verifyData.success) {
+                        alert("Upgrade successful! Activating membership workspace...");
+                        window.location.href = "<?php echo e(url('/account/membership')); ?>";
+                    } else {
+                        alert("Verification failed: " + verifyData.error);
+                    }
+                });
+            } else {
+                alert("Payment cancelled by user.");
+            }
             return;
         }
 
